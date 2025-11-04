@@ -1,0 +1,36 @@
+{
+  "name": "multi-chromecast-controller",
+  "version": "1.0.0",
+  "description": "Multi-Chromecast narrowcasting controller - Cast URLs to multiple Chromecasts from your browser",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon server/index.js",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "start": "node server/index.js",
+    "install-all": "npm install && cd client && npm install"
+  },
+  "keywords": [
+    "chromecast",
+    "narrowcasting",
+    "digital-signage",
+    "multi-screen"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "ws": "^8.14.2",
+    "castv2": "^0.1.10",
+    "castv2-client": "^1.2.0",
+    "bonjour": "^3.5.0",
+    "uuid": "^9.0.1",
+    "node-cron": "^3.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "concurrently": "^8.2.1"
+  }
+}
