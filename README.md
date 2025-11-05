@@ -16,22 +16,36 @@ Version 2.1.0 - Now available as a **Mac DMG** and **Windows EXE** installer!
 
 ## 📥 Installation
 
-### macOS (Recommended)
+### 🍎 Mac - Super Simpel!
 
-1. Download `Narrowcast-Pro-2.1.0.dmg` from releases
-2. Open the DMG file
-3. Drag **Narrowcast Pro** to your Applications folder
-4. Launch from Applications
-5. **Grant network permissions** when prompted (required for Chromecast discovery)
-6. If you see "App from unidentified developer", go to System Preferences → Security & Privacy → Click "Open Anyway"
+```
+1️⃣ Download Narrowcast Pro-2.1.0-mac.zip
+2️⃣ Unzip (dubbelklik)
+3️⃣ Sleep naar Applications folder
+4️⃣ Rechtermuisknop → Open
+5️⃣ Klaar! 🎉
+```
 
-### Windows
+**Eerste keer:** Rechtermuisknop + "Open" (daarna gewone dubbelklik)
 
-1. Download `Narrowcast-Pro-Setup-2.1.0.exe` from releases
-2. Run the installer
-3. Follow the installation wizard
-4. **Allow through Windows Firewall** when prompted (required for Chromecast)
-5. Launch from Start Menu or Desktop shortcut
+### 🪟 Windows - Nog Simpeler!
+
+**Portable (Geen Installatie!):**
+```
+1️⃣ Download Narrowcast-Pro-2.1.0-Portable.exe
+2️⃣ Dubbelklik
+3️⃣ Klaar! 🎉
+```
+
+**Of met Installer (voor shortcuts):**
+```
+1️⃣ Download Narrowcast-Pro-Setup-2.1.0.exe
+2️⃣ Run installer
+3️⃣ Klik door wizard
+4️⃣ Klaar! 🎉
+```
+
+**📖 Zie [INSTALL.md](INSTALL.md) voor uitgebreide installatie instructies met screenshots en troubleshooting!**
 
 ### Build from Source (No Xcode/Visual Studio Required!)
 
