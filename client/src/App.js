@@ -5,7 +5,8 @@ import { useNarrowcastWebSocket } from './hooks/useWebSocket';
 import Dashboard from './pages/Dashboard';
 import Slides from './pages/Slides';
 import Presentations from './pages/Presentations';
-import { MonitorPlay, Layers, Presentation, Activity } from 'lucide-react';
+import Logs from './pages/Logs';
+import { MonitorPlay, Layers, Presentation, Activity, FileText } from 'lucide-react';
 
 function App() {
   const {
@@ -20,6 +21,7 @@ function App() {
     { path: '/', label: 'Dashboard', icon: MonitorPlay },
     { path: '/slides', label: 'Slides', icon: Layers },
     { path: '/presentations', label: 'Presentations', icon: Presentation },
+    { path: '/logs', label: 'Logs', icon: FileText },
   ];
 
   return (
@@ -78,6 +80,10 @@ function App() {
             <Route
               path="/presentations"
               element={<Presentations presentations={presentations} slides={slides} devices={devices} />}
+            />
+            <Route
+              path="/logs"
+              element={<Logs />}
             />
           </Routes>
         </main>

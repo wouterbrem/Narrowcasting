@@ -3,6 +3,8 @@ const cors = require('cors');
 const http = require('http');
 const WebSocket = require('ws');
 const path = require('path');
+const fs = require('fs');
+const logger = require('./logger');
 const ChromecastManager = require('./chromecast-manager');
 const ScheduleManager = require('./schedule-manager');
 const SlideManager = require('./slide-manager');
@@ -18,6 +20,27 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json({ limit: '50mb' })); // Increased limit for HTML content
 
+// Request logging middleware
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    const logData = {
+      method: req.method,
+      path: req.path,
+      status: res.statusCode,
+      duration: `${duration}ms`
+    };
+
+    if (res.statusCode >= 400) {
+      logger.warn(`${req.method} ${req.path} - ${res.statusCode}`, logData);
+    } else {
+      logger.debug(`${req.method} ${req.path} - ${res.statusCode}`, logData);
+    }
+  });
+  next();
+});
+
 // Serve static files from React app in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
@@ -31,7 +54,8 @@ const scheduleManager = new ScheduleManager(chromecastManager);
 
 // WebSocket connection handling
 wss.on('connection', (ws) => {
-  console.log('Client connected');
+  logger.info('WebSocket client connected');
+  logger.activity('WS_CLIENT_CONNECTED', { clients: wss.clients.size });
 
   // Send current state on connection
   ws.send(JSON.stringify({
@@ -43,11 +67,12 @@ wss.on('connection', (ws) => {
   }));
 
   ws.on('close', () => {
-    console.log('Client disconnected');
+    logger.info('WebSocket client disconnected');
+    logger.activity('WS_CLIENT_DISCONNECTED', { clients: wss.clients.size - 1 });
   });
 
   ws.on('error', (error) => {
-    console.error('WebSocket error:', error);
+    logger.error('WebSocket error:', error);
   });
 });
 
@@ -62,14 +87,19 @@ function broadcast(data) {
 
 // Listen for device updates
 chromecastManager.on('deviceFound', (device) => {
+  logger.deviceEvent('found', device.id, { name: device.name, host: device.host });
+  logger.activity('DEVICE_DISCOVERED', { deviceId: device.id, name: device.name, host: device.host });
   broadcast({ type: 'deviceFound', device });
 });
 
 chromecastManager.on('deviceLost', (deviceId) => {
+  logger.deviceEvent('lost', deviceId);
+  logger.activity('DEVICE_LOST', { deviceId });
   broadcast({ type: 'deviceLost', deviceId });
 });
 
 chromecastManager.on('deviceStatus', (deviceId, status) => {
+  logger.deviceEvent('status_change', deviceId, { status });
   broadcast({ type: 'deviceStatus', deviceId, status });
 });
 
@@ -544,6 +574,38 @@ app.get('/api/statistics', (req, res) => {
   });
 });
 
+// Get recent logs
+app.get('/api/logs', (req, res) => {
+  try {
+    const logsDir = path.join(__dirname, '../logs');
+    const logType = req.query.type || 'combined'; // combined, error, activity
+    const lines = parseInt(req.query.lines) || 100;
+
+    const logFile = path.join(logsDir, `${logType}.log`);
+
+    if (!fs.existsSync(logFile)) {
+      return res.json({ logs: [], message: 'No logs available yet' });
+    }
+
+    // Read log file
+    const content = fs.readFileSync(logFile, 'utf8');
+    const allLines = content.split('\n').filter(line => line.trim());
+
+    // Get last N lines
+    const recentLogs = allLines.slice(-lines).reverse();
+
+    res.json({
+      logs: recentLogs,
+      total: allLines.length,
+      returned: recentLogs.length,
+      logType
+    });
+  } catch (error) {
+    logger.error('Failed to read logs:', error);
+    res.status(500).json({ error: 'Failed to read logs' });
+  }
+});
+
 // Serve React app for all other routes in production
 if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => {
@@ -553,18 +615,21 @@ if (process.env.NODE_ENV === 'production') {
 
 // Start server
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log('Starting Chromecast discovery...');
+  logger.info(`Server running on port ${PORT}`);
+  logger.info('Starting Chromecast discovery...');
+  logger.activity('SERVER_STARTED', { port: PORT, environment: process.env.NODE_ENV || 'development' });
   chromecastManager.startDiscovery();
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down gracefully...');
+  logger.warn('SIGTERM received, shutting down gracefully...');
+  logger.activity('SERVER_STOPPING', { reason: 'SIGTERM' });
   chromecastManager.stopDiscovery();
   scheduleManager.stopAll();
   server.close(() => {
-    console.log('Server closed');
+    logger.info('Server closed');
+    logger.activity('SERVER_STOPPED');
     process.exit(0);
   });
 });

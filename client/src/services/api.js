@@ -237,6 +237,15 @@ export const systemAPI = {
    * @returns {Promise<Object>} Statistics
    */
   getStatistics: () => api.get('/statistics').then(res => res.data),
+
+  /**
+   * Get system logs
+   * @param {string} [type='combined'] - Log type (combined, activity, error)
+   * @param {number} [lines=100] - Number of lines to retrieve
+   * @returns {Promise<Object>} Logs data
+   */
+  getLogs: (type = 'combined', lines = 100) =>
+    api.get('/logs', { params: { type, lines } }).then(res => res.data),
 };
 
 /**
