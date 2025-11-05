@@ -186,13 +186,49 @@ app.post('/api/devices/volume', async (req, res) => {
 // SLIDE ENDPOINTS
 // ========================================
 
-// Get all slides
+// Get all slides (with optional pagination)
 app.get('/api/slides', (req, res) => {
   const type = req.query.type;
-  const slides = type ?
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 0; // 0 = no limit (backward compatible)
+  const search = req.query.search || '';
+
+  let slides = type ?
     slideManager.getSlidesByType(type) :
     slideManager.getAllSlides();
-  res.json(slides);
+
+  // Apply search filter if provided
+  if (search) {
+    const searchLower = search.toLowerCase();
+    slides = slides.filter(slide =>
+      slide.name.toLowerCase().includes(searchLower) ||
+      (slide.description && slide.description.toLowerCase().includes(searchLower))
+    );
+  }
+
+  // If no limit specified, return all slides (backward compatible)
+  if (limit === 0) {
+    return res.json(slides);
+  }
+
+  // Apply pagination
+  const totalSlides = slides.length;
+  const totalPages = Math.ceil(totalSlides / limit);
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  const paginatedSlides = slides.slice(startIndex, endIndex);
+
+  res.json({
+    data: paginatedSlides,
+    pagination: {
+      page,
+      limit,
+      totalPages,
+      totalItems: totalSlides,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1
+    }
+  });
 });
 
 // Get single slide
@@ -276,17 +312,50 @@ app.get('/api/slides/:id/preview', (req, res) => {
 // PRESENTATION ENDPOINTS
 // ========================================
 
-// Get all presentations
+// Get all presentations (with optional pagination)
 app.get('/api/presentations', (req, res) => {
   const withSlides = req.query.withSlides === 'true';
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 0; // 0 = no limit (backward compatible)
+  const search = req.query.search || '';
 
-  if (withSlides) {
-    const presentations = presentationManager.getAllPresentations()
-      .map(p => presentationManager.getPresentationWithSlides(p.id));
-    res.json(presentations);
-  } else {
-    res.json(presentationManager.getAllPresentations());
+  let presentations = withSlides ?
+    presentationManager.getAllPresentations()
+      .map(p => presentationManager.getPresentationWithSlides(p.id)) :
+    presentationManager.getAllPresentations();
+
+  // Apply search filter if provided
+  if (search) {
+    const searchLower = search.toLowerCase();
+    presentations = presentations.filter(presentation =>
+      presentation.name.toLowerCase().includes(searchLower) ||
+      (presentation.description && presentation.description.toLowerCase().includes(searchLower))
+    );
   }
+
+  // If no limit specified, return all presentations (backward compatible)
+  if (limit === 0) {
+    return res.json(presentations);
+  }
+
+  // Apply pagination
+  const totalPresentations = presentations.length;
+  const totalPages = Math.ceil(totalPresentations / limit);
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  const paginatedPresentations = presentations.slice(startIndex, endIndex);
+
+  res.json({
+    data: paginatedPresentations,
+    pagination: {
+      page,
+      limit,
+      totalPages,
+      totalItems: totalPresentations,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1
+    }
+  });
 });
 
 // Get single presentation

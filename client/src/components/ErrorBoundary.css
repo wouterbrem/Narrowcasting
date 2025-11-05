@@ -1,0 +1,188 @@
+.error-boundary {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+}
+
+.error-boundary-container {
+  max-width: 600px;
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  padding: 3rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.error-boundary-icon {
+  margin-bottom: 1.5rem;
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.error-boundary-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1c1c1e;
+  margin-bottom: 1rem;
+}
+
+.error-boundary-message {
+  font-size: 1.1rem;
+  color: #636366;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.error-boundary-details {
+  background: #f5f5f7;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.error-boundary-details h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #8e8e93;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+
+.error-boundary-code {
+  background: #1c1c1e;
+  color: #ff3b30;
+  border-radius: 6px;
+  padding: 1rem;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.85rem;
+  overflow-x: auto;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.error-boundary-code strong {
+  color: #ff9500;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.error-boundary-code pre {
+  margin: 0;
+  color: #ff3b30;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.error-boundary-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.error-boundary-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.error-boundary-actions .btn-primary {
+  background: #0071e3;
+  color: white;
+}
+
+.error-boundary-actions .btn-primary:hover {
+  background: #0063c9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
+}
+
+.error-boundary-actions .btn-secondary {
+  background: #f5f5f7;
+  color: #1c1c1e;
+}
+
+.error-boundary-actions .btn-secondary:hover {
+  background: #e8e8ea;
+  transform: translateY(-1px);
+}
+
+.error-boundary-help {
+  background: #f9f9fb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.error-boundary-help p {
+  font-weight: 600;
+  color: #1c1c1e;
+  margin-bottom: 0.75rem;
+}
+
+.error-boundary-help ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.error-boundary-help li {
+  padding: 0.5rem 0;
+  color: #636366;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.error-boundary-help li:before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #0071e3;
+  font-weight: bold;
+}
+
+.error-boundary-contact {
+  font-size: 0.9rem;
+  color: #8e8e93;
+  font-style: italic;
+  margin-top: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .error-boundary-container {
+    padding: 2rem 1.5rem;
+  }
+
+  .error-boundary-title {
+    font-size: 1.5rem;
+  }
+
+  .error-boundary-actions {
+    flex-direction: column;
+  }
+
+  .error-boundary-actions .btn {
+    width: 100%;
+  }
+}

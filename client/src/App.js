@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import './App.css';
 import { useNarrowcastWebSocket } from './hooks/useWebSocket';
+import ErrorBoundary from './components/ErrorBoundary';
 import Dashboard from './pages/Dashboard';
 import Slides from './pages/Slides';
 import Presentations from './pages/Presentations';
@@ -70,28 +71,50 @@ function App() {
         </aside>
 
         <main className="main-content">
-          <Routes>
-            <Route
-              path="/"
-              element={<Dashboard devices={devices} presentations={presentations} slides={slides} />}
-            />
-            <Route
-              path="/slides"
-              element={<Slides slides={slides} />}
-            />
-            <Route
-              path="/presentations"
-              element={<Presentations presentations={presentations} slides={slides} devices={devices} />}
-            />
-            <Route
-              path="/branding"
-              element={<Branding />}
-            />
-            <Route
-              path="/logs"
-              element={<Logs />}
-            />
-          </Routes>
+          <ErrorBoundary>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <ErrorBoundary>
+                    <Dashboard devices={devices} presentations={presentations} slides={slides} />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/slides"
+                element={
+                  <ErrorBoundary>
+                    <Slides slides={slides} />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/presentations"
+                element={
+                  <ErrorBoundary>
+                    <Presentations presentations={presentations} slides={slides} devices={devices} />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/branding"
+                element={
+                  <ErrorBoundary>
+                    <Branding />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/logs"
+                element={
+                  <ErrorBoundary>
+                    <Logs />
+                  </ErrorBoundary>
+                }
+              />
+            </Routes>
+          </ErrorBoundary>
         </main>
       </div>
     </Router>
