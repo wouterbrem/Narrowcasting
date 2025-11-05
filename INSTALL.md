@@ -1,18 +1,18 @@
-# 📦 Narrowcast Pro - Installatie Gids
+# 📦 Narrowcast Pro - Installation Guide
 
-**Versie 2.1.0** - Super simpele installatie in 3 stappen!
+**Version 2.1.0** - Super simple installation in 3 steps!
 
 ---
 
-## 🍎 Mac Installatie (Aanbevolen Methode)
+## 🍎 Mac Installation (Recommended Method)
 
-### Stap 1: Download
+### Step 1: Download
 Download **Narrowcast Pro-2.1.0-mac.zip**
 
-### Stap 2: Unzip
-Dubbelklik op het gedownloade bestand om het uit te pakken
+### Step 2: Unzip
+Double-click the downloaded file to extract it
 
-### Stap 3: Sleep naar Applications
+### Step 3: Drag to Applications
 ```
 ┌─────────────────┐
 │  Narrowcast Pro │  ──────►  📁 Applications
@@ -20,191 +20,191 @@ Dubbelklik op het gedownloade bestand om het uit te pakken
 └─────────────────┘
 ```
 
-Sleep de **Narrowcast Pro.app** naar je **Applications** map
+Drag **Narrowcast Pro.app** to your **Applications** folder
 
-### Stap 4: Open de App
-1. Ga naar Applications
-2. **Rechtermuisknop** op Narrowcast Pro
-3. Klik **"Open"** (eerste keer)
-4. Klik nogmaals **"Open"** in de waarschuwing
-5. Klaar! 🎉
+### Step 4: Open the App
+1. Go to Applications
+2. **Right-click** on Narrowcast Pro
+3. Click **"Open"** (first time only)
+4. Click **"Open"** again in the warning dialog
+5. Done! 🎉
 
-**Let op:** Eerste keer moet je rechtermuisklik + "Open" gebruiken omdat de app niet gesigneerd is (dit is normaal!)
+**Note:** The first time you must use right-click + "Open" because the app is unsigned (this is normal!)
 
 ---
 
-## 🪟 Windows Installatie
+## 🪟 Windows Installation
 
-### Methode 1: Portable (Geen Installatie!)
+### Method 1: Portable (No Installation!)
 
-**Simpelst!** Geen installatie nodig!
+**Simplest!** No installation required!
 
 1. Download **Narrowcast-Pro-2.1.0-Portable.exe**
-2. Dubbelklik om te starten
-3. Klaar! 🎉
+2. Double-click to launch
+3. Done! 🎉
 
-**Let op:** Windows Defender SmartScreen waarschuwing?
-- Klik **"Meer informatie"**
-- Klik **"Toch uitvoeren"**
-- Dit is normaal voor niet-gesigneerde apps!
+**Note:** Windows Defender SmartScreen warning?
+- Click **"More info"**
+- Click **"Run anyway"**
+- This is normal for unsigned apps!
 
-### Methode 2: Installer (Met Shortcuts)
+### Method 2: Installer (With Shortcuts)
 
-Als je shortcuts op je bureaublad wilt:
+If you want desktop shortcuts:
 
 1. Download **Narrowcast-Pro-Setup-2.1.0.exe**
-2. Dubbelklik om installer te starten
-3. Kies installatie locatie
-4. Klik door de wizard
-5. Klaar! 🎉
+2. Double-click to start installer
+3. Choose installation location
+4. Click through the wizard
+5. Done! 🎉
 
 ---
 
-## 🔥 Eerste Keer Opstarten
+## 🔥 First Time Launch
 
-### Wat gebeurt er?
+### What Happens?
 
-1. **App start** → Je ziet het Narrowcast Pro window
-2. **Browser opent** → http://localhost:3001
-3. **Toestemming vragen** → Sta netwerktoegang toe!
+1. **App starts** → You see the Narrowcast Pro window
+2. **Browser opens** → http://localhost:3001
+3. **Permission prompt** → Allow network access!
 
-### Netwerk Toestemming (Belangrijk!)
+### Network Permission (Important!)
 
 **Mac:**
 ```
 ┌──────────────────────────────────────────┐
-│  "Node" wil inkomende netwerkverbindingen│
-│   accepteren.                             │
+│  "Node" would like to accept incoming    │
+│   network connections.                    │
 │                                           │
-│   [Weigeren]  [Toestaan]                 │
+│   [Deny]  [Allow]                        │
 └──────────────────────────────────────────┘
 ```
-**→ Klik "Toestaan"**
+**→ Click "Allow"**
 
 **Windows:**
 ```
 ┌──────────────────────────────────────────┐
 │  Windows Defender Firewall                │
-│  Node.js toegang geven?                   │
+│  Allow Node.js access?                    │
 │                                           │
-│  [Privénetwerken]  ✓                     │
-│  [Openbare netwerken]  ✓                 │
+│  [Private networks]  ✓                   │
+│  [Public networks]  ✓                    │
 │                                           │
-│  [Toegang toestaan]                       │
+│  [Allow access]                           │
 └──────────────────────────────────────────┘
 ```
-**→ Klik "Toegang toestaan"**
+**→ Click "Allow access"**
 
-**Waarom?** Narrowcast Pro heeft netwerktoegang nodig om Chromecasts te vinden!
-
----
-
-## ✅ Checklist: Alles Werkt!
-
-Na installatie zou je moeten zien:
-
-- [ ] ✅ App is gestart
-- [ ] ✅ Browser is open op http://localhost:3001
-- [ ] ✅ Dashboard is zichtbaar
-- [ ] ✅ Chromecasts verschijnen automatisch (als je er hebt)
-
-**Chromecasts niet zichtbaar?** Zie "Problemen Oplossen" hieronder.
+**Why?** Narrowcast Pro needs network access to discover Chromecasts!
 
 ---
 
-## 🚀 Snelstart na Installatie
+## ✅ Checklist: Everything Works!
 
-### 1. Maak je Eerste Slide
+After installation you should see:
+
+- [ ] ✅ App has started
+- [ ] ✅ Browser is open at http://localhost:3001
+- [ ] ✅ Dashboard is visible
+- [ ] ✅ Chromecasts appear automatically (if you have any)
+
+**Chromecasts not showing?** See "Troubleshooting" below.
+
+---
+
+## 🚀 Quick Start After Installation
+
+### 1. Create Your First Slide
 ```
 Dashboard → Slides → [Create Slide]
-→ Kies "Clock" (simpelst)
-→ Vul naam in
+→ Choose "Clock" (simplest)
+→ Enter name
 → [Create Slide]
 ```
 
-### 2. Maak je Eerste Presentatie
+### 2. Create Your First Presentation
 ```
 Dashboard → Presentations → [Create Presentation]
-→ Vul naam in
-→ [Add Slide] → Selecteer je Clock slide
+→ Enter name
+→ [Add Slide] → Select your Clock slide
 → [Create Presentation]
 ```
 
-### 3. Cast naar je Display!
+### 3. Cast to Your Display!
 ```
 Dashboard
-→ Vink Chromecast(s) aan
-→ Selecteer je presentatie
+→ Check Chromecast(s)
+→ Select your presentation
 → [Cast to Selected Devices]
-→ 🎉 Het werkt!
+→ 🎉 It works!
 ```
 
 ---
 
-## 🔧 Problemen Oplossen
+## 🔧 Troubleshooting
 
-### "App kan niet worden geopend" (Mac)
+### "App cannot be opened" (Mac)
 
-**Symptoom:**
+**Symptom:**
 ```
-"Narrowcast Pro.app" kan niet worden geopend omdat
-het afkomstig is van een onbekende ontwikkelaar
-```
-
-**Oplossing:**
-1. Ga naar **Systeemvoorkeuren**
-2. → **Beveiliging en Privacy**
-3. Klik onderaan **"Toch openen"**
-
-**Of:**
-1. **Rechtermuisknop** op de app
-2. Klik **"Open"**
-3. Klik nogmaals **"Open"**
-
-Dit hoef je maar **één keer** te doen!
-
-### SmartScreen Waarschuwing (Windows)
-
-**Symptoom:**
-```
-Windows Defender SmartScreen heeft deze app geblokkeerd
+"Narrowcast Pro.app" cannot be opened because
+it is from an unidentified developer
 ```
 
-**Oplossing:**
-1. Klik **"Meer informatie"**
-2. Klik **"Toch uitvoeren"**
+**Solution:**
+1. Go to **System Preferences**
+2. → **Security & Privacy**
+3. Click **"Open Anyway"** at the bottom
 
-Dit is normaal voor niet-gesigneerde apps!
+**Or:**
+1. **Right-click** the app
+2. Click **"Open"**
+3. Click **"Open"** again
 
-### Chromecasts Niet Zichtbaar
+You only need to do this **once**!
+
+### SmartScreen Warning (Windows)
+
+**Symptom:**
+```
+Windows Defender SmartScreen prevented this app from starting
+```
+
+**Solution:**
+1. Click **"More info"**
+2. Click **"Run anyway"**
+
+This is normal for unsigned apps!
+
+### Chromecasts Not Visible
 
 **Check:**
-- [ ] Zijn je Chromecasts aangezet?
-- [ ] Zitten je computer EN Chromecasts op hetzelfde WiFi netwerk?
-- [ ] Heb je netwerktoegang toegestaan?
+- [ ] Are your Chromecasts powered on?
+- [ ] Are your computer AND Chromecasts on the same WiFi network?
+- [ ] Did you allow network access?
 
 **Firewall Check:**
 
 **Mac:**
 ```
-Systeemvoorkeuren → Beveiliging en Privacy
-→ Firewall → Firewallvoorkeuren
-→ Check: "Node" of "Narrowcast Pro" staat op TOEGESTAAN
+System Preferences → Security & Privacy
+→ Firewall → Firewall Options
+→ Check: "Node" or "Narrowcast Pro" is set to ALLOW
 ```
 
 **Windows:**
 ```
-Windows Firewall → Een app toestaan
-→ Zoek "Node.js"
-→ Check: Zowel Privé als Openbaar aangevinkt
+Windows Firewall → Allow an app
+→ Find "Node.js"
+→ Check: Both Private and Public are checked
 ```
 
-**Nog steeds niet?**
-1. Herstart de app
-2. Check de **Logs** pagina in de app
-3. Kijk naar foutmeldingen
+**Still not working?**
+1. Restart the app
+2. Check the **Logs** page in the app
+3. Look for error messages
 
-### Poort 3001 al in gebruik?
+### Port 3001 Already in Use?
 
 **Mac:**
 ```bash
@@ -212,16 +212,16 @@ lsof -ti:3001 | xargs kill
 ```
 
 **Windows:**
-1. Open Taakbeheer
-2. Zoek "node" processen
-3. Stop ze
-4. Herstart app
+1. Open Task Manager
+2. Find "node" processes
+3. Stop them
+4. Restart app
 
 ---
 
-## 📂 Waar Staat Alles?
+## 📂 Where is Everything?
 
-### Logs (voor troubleshooting)
+### Logs (for troubleshooting)
 **Mac:**
 ```
 ~/Library/Application Support/Narrowcast Pro/logs/
@@ -243,7 +243,7 @@ lsof -ti:3001 | xargs kill
 %APPDATA%\Narrowcast Pro\data\
 ```
 
-### Geüploade Bestanden (logo's)
+### Uploaded Files (logos)
 **Mac:**
 ```
 ~/Library/Application Support/Narrowcast Pro/uploads/
@@ -254,64 +254,64 @@ lsof -ti:3001 | xargs kill
 %APPDATA%\Narrowcast Pro\uploads\
 ```
 
-**Tip:** Je kunt deze mappen openen vanuit de app:
+**Tip:** You can open these folders from the app:
 ```
 Help menu → Open Logs Folder
 ```
 
 ---
 
-## 🎨 Volgende Stappen
+## 🎨 Next Steps
 
-Nu je app werkt:
+Now that your app is working:
 
-1. **📊 Maak meer slides** - Probeer alle 9 types!
-   - Web pagina's
+1. **📊 Create more slides** - Try all 9 types!
+   - Web pages
    - YouTube videos
-   - Weer informatie
+   - Weather info
    - RSS feeds
-   - Klok
-   - Foto's
+   - Clock
+   - Images
    - Social media
-   - Nieuws
+   - News
    - Custom HTML
 
-2. **🎨 Pas branding aan**
-   - Upload je logo
-   - Stel je kleuren in
-   - Voeg tekst overlay toe
+2. **🎨 Customize branding**
+   - Upload your logo
+   - Set your colors
+   - Add text overlay
 
-3. **📽️ Bouw presentaties**
-   - Combineer meerdere slides
-   - Stel duur per slide in
-   - Cast naar meerdere displays tegelijk!
-
----
-
-## 📞 Hulp Nodig?
-
-1. **Check de Logs** - Ga naar Logs pagina in de app
-2. **Lees de README.md** - Uitgebreide documentatie
-3. **Zie QUICK_START.md** - Snelle gids
-4. **Check BUILD.md** - Als je zelf wilt builden
+3. **📽️ Build presentations**
+   - Combine multiple slides
+   - Set duration per slide
+   - Cast to multiple displays at once!
 
 ---
 
-## 🔄 Update
+## 📞 Need Help?
 
-Nieuwe versie beschikbaar?
-
-1. Download nieuwe versie
-2. Stop oude app
-3. Vervang oude .app/.exe met nieuwe
-4. Start nieuwe versie
-5. Klaar!
-
-Je data blijft behouden!
+1. **Check the Logs** - Go to Logs page in the app
+2. **Read README.md** - Comprehensive documentation
+3. **See QUICK_START.md** - Quick guide
+4. **Check BUILD.md** - If you want to build yourself
 
 ---
 
-**Veel plezier met Narrowcast Pro!** 🎉
+## 🔄 Updates
 
-**Versie:** 2.1.0
-**Support:** Check README.md voor meer info
+New version available?
+
+1. Download new version
+2. Stop old app
+3. Replace old .app/.exe with new one
+4. Start new version
+5. Done!
+
+Your data will be preserved!
+
+---
+
+**Enjoy Narrowcast Pro!** 🎉
+
+**Version:** 2.1.0
+**Support:** Check README.md for more info

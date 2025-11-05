@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Narrowcast Pro - Automatische Installatie Script
-# Voor Mac en Linux - Installeert alles automatisch!
+# Narrowcast Pro - Automatic Installation Script
+# For Mac and Linux - Installs everything automatically!
 
 set -e
 
-# Kleuren
+# Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -18,18 +18,18 @@ clear
 echo ""
 echo -e "${BLUE}${BOLD}╔════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}${BOLD}║   Narrowcast Pro - Auto Installer     ║${NC}"
-echo -e "${BLUE}${BOLD}║            Versie 2.1.0                ║${NC}"
+echo -e "${BLUE}${BOLD}║            Version 2.1.0               ║${NC}"
 echo -e "${BLUE}${BOLD}╔════════════════════════════════════════╗${NC}"
 echo ""
-echo -e "${BOLD}Deze installer doet alles automatisch voor je!${NC}"
+echo -e "${BOLD}This installer will do everything automatically!${NC}"
 echo ""
-echo -e "Het installeert:"
+echo -e "It installs:"
 echo -e "  ✓ Node.js dependencies"
 echo -e "  ✓ React frontend"
 echo -e "  ✓ Electron app"
-echo -e "  ✓ Build de complete app"
+echo -e "  ✓ Builds the complete app"
 echo ""
-read -p "Druk op Enter om te starten of Ctrl+C om te stoppen..."
+read -p "Press Enter to start or Ctrl+C to cancel..."
 
 # Check OS
 echo ""

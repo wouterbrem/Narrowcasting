@@ -16,39 +16,39 @@ Version 2.1.0 - Now available as a **Mac DMG** and **Windows EXE** installer!
 
 ## 📥 Installation
 
-> **⚠️ Heb je de source code?** Dan moet je eerst de app **bouwen**!
-> 👉 **Zie [BUILD_INSTRUCTIES.md](BUILD_INSTRUCTIES.md)** voor stap-voor-stap build instructies.
+> **⚠️ Have the source code?** You need to **build the app first**!
+> 👉 **See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md)** for step-by-step build instructions.
 
-### 🍎 Mac - Super Simpel!
+### 🍎 Mac - Super Simple!
 
 ```
 1️⃣ Download Narrowcast Pro-2.1.0-mac.zip
-2️⃣ Unzip (dubbelklik)
-3️⃣ Sleep naar Applications folder
-4️⃣ Rechtermuisknop → Open
-5️⃣ Klaar! 🎉
+2️⃣ Unzip (double-click)
+3️⃣ Drag to Applications folder
+4️⃣ Right-click → Open
+5️⃣ Done! 🎉
 ```
 
-**Eerste keer:** Rechtermuisknop + "Open" (daarna gewone dubbelklik)
+**First time:** Right-click + "Open" (after that, normal double-click works)
 
-### 🪟 Windows - Nog Simpeler!
+### 🪟 Windows - Even Simpler!
 
-**Portable (Geen Installatie!):**
+**Portable (No Installation!):**
 ```
 1️⃣ Download Narrowcast-Pro-2.1.0-Portable.exe
-2️⃣ Dubbelklik
-3️⃣ Klaar! 🎉
+2️⃣ Double-click
+3️⃣ Done! 🎉
 ```
 
-**Of met Installer (voor shortcuts):**
+**Or with Installer (for shortcuts):**
 ```
 1️⃣ Download Narrowcast-Pro-Setup-2.1.0.exe
 2️⃣ Run installer
-3️⃣ Klik door wizard
-4️⃣ Klaar! 🎉
+3️⃣ Click through wizard
+4️⃣ Done! 🎉
 ```
 
-**📖 Zie [INSTALL.md](INSTALL.md) voor uitgebreide installatie instructies met screenshots en troubleshooting!**
+**📖 See [INSTALL.md](INSTALL.md) for detailed installation instructions with troubleshooting!**
 
 ### Build from Source (No Xcode/Visual Studio Required!)
 
