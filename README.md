@@ -4,6 +4,29 @@
 
 Version 2.1.0 - Now available as a **Mac DMG** and **Windows EXE** installer!
 
+---
+
+## 🤔 What is Narrowcast Pro?
+
+Narrowcast Pro is a **desktop app that lets you control multiple Chromecast devices** from your computer.
+
+**Think of it like PowerPoint for TVs!**
+
+Create content (web pages, weather, news, videos, custom slides) and display it on any TV with a Chromecast. Perfect for:
+
+- 🏢 **Offices** - Company news and announcements
+- 🏪 **Retail** - Promotions and product information
+- 🏫 **Schools** - Schedules and announcements
+- 🏥 **Healthcare** - Wait times and health information
+- 🏨 **Hotels** - Local information and events
+- 🍽️ **Restaurants** - Menus and specials
+- 🏋️ **Gyms** - Class schedules and motivation
+- 🎪 **Events** - Information displays and signage
+
+**No technical knowledge required!** Just download, install, and start casting.
+
+---
+
 ## 🎉 Features
 
 - 🖥️ **Multi-Chromecast Control** - Manage multiple Chromecast devices from one interface
@@ -135,6 +158,88 @@ npm run dist:win    # Windows: Creates Setup.exe and Portable.exe
 3. Choose a presentation
 4. Click **Cast to Selected Devices**
 5. Watch it play on your displays!
+
+---
+
+## ❓ Frequently Asked Questions (FAQ)
+
+### Getting Started
+
+**Q: Do I need to pay for this?**
+No! Narrowcast Pro is completely free and open source (MIT license).
+
+**Q: Do I need Node.js or npm installed?**
+No! Just download the installer (DMG for Mac, EXE for Windows) and install. Everything is included.
+
+**Q: Where do I download it?**
+Go to the [Releases page](../../releases/latest) and download for your platform.
+
+**Q: How big is the download?**
+Mac: ~120 MB | Windows: ~100 MB (similar to VS Code, Slack, Discord)
+
+### Chromecasts
+
+**Q: How many Chromecasts can I control?**
+Unlimited! Control as many as are on your network.
+
+**Q: What Chromecast versions work?**
+All of them! Chromecast Gen 1-3, Ultra, with Google TV, and TVs with built-in Chromecast.
+
+**Q: My Chromecasts don't appear. Help!**
+Make sure:
+- Chromecasts are powered on
+- Your computer and Chromecasts are on the **same WiFi network**
+- You clicked "Allow" for network permissions
+- See [INSTALL.md](INSTALL.md) for detailed troubleshooting
+
+**Q: Can I control Chromecasts from multiple computers?**
+Not simultaneously. Only run one instance per network.
+
+### Content
+
+**Q: What types of content can I display?**
+9 types: Web pages, YouTube, Weather, RSS feeds, Clock, Images, Social media, News, Custom HTML
+
+**Q: Can I add my company logo?**
+Yes! Go to Branding page to upload your logo, set colors, and add text overlays.
+
+**Q: Does content work offline?**
+The app works offline, but web pages, weather, news, RSS feeds need internet. Clock and images work offline.
+
+**Q: Can I schedule content to play at specific times?**
+Not yet in v2.1.0, but it's planned for a future version.
+
+### Technical
+
+**Q: Does it collect my data?**
+No! Everything runs locally. No tracking, no analytics, no telemetry. Your data never leaves your computer.
+
+**Q: Is it open source?**
+Yes! Check the GitHub repository to see all the code.
+
+**Q: Why does Mac say "unidentified developer"?**
+The app isn't code-signed (costs $99/year). It's safe - just right-click → Open the first time.
+
+**Q: Why does Windows show a security warning?**
+Same reason - no code signing certificate. Just click "More info" → "Run anyway."
+
+**Q: Do I need internet to use it?**
+To download: Yes. To use: No (but some content types like weather/news need internet).
+
+### Updates & Support
+
+**Q: How do I update to a new version?**
+Download the new installer, close the old app, install the new version. Your data is preserved!
+
+**Q: Will updating delete my content?**
+No! All slides, presentations, and settings are saved separately and preserved during updates.
+
+**Q: Where can I get help?**
+- [INSTALL.md](INSTALL.md) - Complete installation guide with troubleshooting
+- [QUICK_START.md](QUICK_START.md) - Quick feature guide
+- [GitHub Issues](../../issues) - Report bugs or request features
+
+---
 
 ## 📺 Slide Types Explained
 
