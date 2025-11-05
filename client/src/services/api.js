@@ -223,6 +223,49 @@ export const groupAPI = {
 };
 
 /**
+ * Branding API
+ */
+export const brandingAPI = {
+  /**
+   * Get branding configuration
+   * @returns {Promise<Object>} Branding configuration
+   */
+  get: () => api.get('/branding').then(res => res.data),
+
+  /**
+   * Update branding configuration
+   * @param {Object} updates - Branding updates
+   * @returns {Promise<Object>} Updated branding
+   */
+  update: (updates) => api.put('/branding', updates).then(res => res.data.branding),
+
+  /**
+   * Upload branding logo
+   * @param {File} file - Logo image file
+   * @returns {Promise<string>} Logo URL
+   */
+  uploadLogo: (file) => {
+    const formData = new FormData();
+    formData.append('logo', file);
+    return api.post('/branding/logo', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }).then(res => res.data.logoUrl);
+  },
+
+  /**
+   * Delete branding logo
+   * @returns {Promise<Object>} Result
+   */
+  deleteLogo: () => api.delete('/branding/logo').then(res => res.data),
+
+  /**
+   * Reset branding to default
+   * @returns {Promise<Object>} Default branding
+   */
+  reset: () => api.post('/branding/reset').then(res => res.data.branding),
+};
+
+/**
  * System API
  */
 export const systemAPI = {
@@ -263,6 +306,7 @@ export default {
   slide: slideAPI,
   presentation: presentationAPI,
   group: groupAPI,
+  branding: brandingAPI,
   system: systemAPI,
   getWebSocketUrl,
 };

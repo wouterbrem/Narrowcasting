@@ -4,11 +4,13 @@ const http = require('http');
 const WebSocket = require('ws');
 const path = require('path');
 const fs = require('fs');
+const multer = require('multer');
 const logger = require('./logger');
 const ChromecastManager = require('./chromecast-manager');
 const ScheduleManager = require('./schedule-manager');
 const SlideManager = require('./slide-manager');
 const PresentationManager = require('./presentation-manager');
+const brandingManager = require('./branding-manager');
 
 const app = express();
 const server = http.createServer(app);
@@ -41,10 +43,27 @@ app.use((req, res, next) => {
   next();
 });
 
+// Serve uploaded files (branding assets)
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Serve static files from React app in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
+
+// Configure multer for file uploads
+const upload = multer({
+  dest: path.join(__dirname, '../uploads/temp'),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    // Only allow images
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
 
 // Initialize managers
 const chromecastManager = new ChromecastManager();
@@ -530,6 +549,86 @@ app.delete('/api/schedules/:scheduleId', (req, res) => {
   } catch (error) {
     console.error('Schedule deletion error:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// ========================================
+// BRANDING ENDPOINTS
+// ========================================
+
+// Get branding configuration
+app.get('/api/branding', (req, res) => {
+  try {
+    const branding = brandingManager.getBranding();
+    res.json(branding);
+  } catch (error) {
+    logger.apiError('GET', '/api/branding', error);
+    res.status(500).json({ error: 'Failed to get branding configuration' });
+  }
+});
+
+// Update branding configuration
+app.put('/api/branding', async (req, res) => {
+  try {
+    const updates = req.body;
+    const branding = await brandingManager.updateBranding(updates);
+
+    logger.activity('BRANDING_UPDATED', { updates: Object.keys(updates) });
+    broadcast({ type: 'brandingUpdated', branding });
+
+    res.json({ success: true, branding });
+  } catch (error) {
+    logger.apiError('PUT', '/api/branding', error);
+    res.status(500).json({ error: 'Failed to update branding configuration' });
+  }
+});
+
+// Upload branding logo
+app.post('/api/branding/logo', upload.single('logo'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const logoUrl = await brandingManager.uploadLogo(req.file);
+
+    logger.activity('BRANDING_LOGO_UPLOADED', { logoUrl });
+    broadcast({ type: 'brandingUpdated', branding: brandingManager.getBranding() });
+
+    res.json({ success: true, logoUrl });
+  } catch (error) {
+    logger.apiError('POST', '/api/branding/logo', error);
+    res.status(500).json({ error: 'Failed to upload logo' });
+  }
+});
+
+// Delete branding logo
+app.delete('/api/branding/logo', async (req, res) => {
+  try {
+    await brandingManager.deleteLogo();
+
+    logger.activity('BRANDING_LOGO_DELETED');
+    broadcast({ type: 'brandingUpdated', branding: brandingManager.getBranding() });
+
+    res.json({ success: true });
+  } catch (error) {
+    logger.apiError('DELETE', '/api/branding/logo', error);
+    res.status(500).json({ error: 'Failed to delete logo' });
+  }
+});
+
+// Reset branding to default
+app.post('/api/branding/reset', async (req, res) => {
+  try {
+    const branding = await brandingManager.resetToDefault();
+
+    logger.activity('BRANDING_RESET_TO_DEFAULT');
+    broadcast({ type: 'brandingUpdated', branding });
+
+    res.json({ success: true, branding });
+  } catch (error) {
+    logger.apiError('POST', '/api/branding/reset', error);
+    res.status(500).json({ error: 'Failed to reset branding' });
   }
 });
 

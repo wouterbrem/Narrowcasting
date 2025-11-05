@@ -226,10 +226,19 @@ class PresentationManager {
 
   /**
    * Generate player HTML with slide rotation
+   * @param {Object} presentation - Presentation object
+   * @param {Array} slidesData - Array of slide data with HTML
+   * @param {Object} branding - Custom branding configuration
    */
-  generatePlayerHtml(presentation, slidesData) {
+  generatePlayerHtml(presentation, slidesData, branding = null) {
     const slides = JSON.stringify(slidesData);
     const settings = JSON.stringify(presentation.settings);
+
+    // Get branding CSS and HTML if provided
+    const brandingManager = require('./branding-manager');
+    const actualBranding = branding || brandingManager.getBranding();
+    const brandingCSS = actualBranding.enabled ? brandingManager.generateBrandingCSS() : '';
+    const brandingHTML = actualBranding.enabled ? brandingManager.generateBrandingHTML() : '';
 
     return `<!DOCTYPE html>
 <html>
@@ -331,6 +340,7 @@ class PresentationManager {
       display: none; /* Hidden by default */
     }
   </style>
+  ${brandingCSS}
 </head>
 <body>
   <div class="presentation-container" id="presentation">
@@ -346,6 +356,8 @@ class PresentationManager {
     Slide: <span id="debug-slide">0</span> / <span id="debug-total">0</span><br>
     Time: <span id="debug-time">0</span>s
   </div>
+
+  ${brandingHTML}
 
   <script>
     const SLIDES = ${slides};
