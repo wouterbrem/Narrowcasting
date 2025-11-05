@@ -1,0 +1,157 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Triggers on version tags like v2.1.0, v2.2.0, etc.
+  workflow_dispatch:  # Allows manual triggering from GitHub UI
+
+jobs:
+  build:
+    name: Build Installers
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+        include:
+          - os: macos-latest
+            platform: mac
+          - os: windows-latest
+            platform: win
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies (root)
+        run: npm install
+
+      - name: Install dependencies (client)
+        run: |
+          cd client
+          npm install
+
+      - name: Build React app
+        run: npm run build
+
+      - name: Prepare graphics (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          cd build
+          # Install ImageMagick for graphics conversion
+          brew install imagemagick
+
+          # Convert SVG to PNG/BMP/ICO/ICNS
+          convert icon.svg -resize 512x512 -background none icon.png
+          convert icon.svg -resize 1024x1024 -background none icon@2x.png
+          convert dmg-background.svg -resize 560x400 dmg-background.png
+          convert dmg-background.svg -resize 1120x800 dmg-background@2x.png
+          convert installerSidebar.svg -resize 164x314 installerSidebar.bmp || true
+          convert installerHeader.svg -resize 150x57 installerHeader.bmp || true
+
+          # Generate ICNS for Mac
+          mkdir -p icon.iconset
+          sips -z 16 16     icon.png --out icon.iconset/icon_16x16.png
+          sips -z 32 32     icon.png --out icon.iconset/icon_16x16@2x.png
+          sips -z 32 32     icon.png --out icon.iconset/icon_32x32.png
+          sips -z 64 64     icon.png --out icon.iconset/icon_32x32@2x.png
+          sips -z 128 128   icon.png --out icon.iconset/icon_128x128.png
+          sips -z 256 256   icon.png --out icon.iconset/icon_128x128@2x.png
+          sips -z 256 256   icon.png --out icon.iconset/icon_256x256.png
+          sips -z 512 512   icon.png --out icon.iconset/icon_256x256@2x.png
+          sips -z 512 512   icon.png --out icon.iconset/icon_512x512.png
+          sips -z 1024 1024 icon.png --out icon.iconset/icon_512x512@2x.png
+          iconutil -c icns icon.iconset
+          rm -rf icon.iconset
+
+      - name: Prepare graphics (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd build
+          # Install ImageMagick via Chocolatey
+          choco install imagemagick -y
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
+          # Convert SVG to PNG/BMP/ICO
+          magick icon.svg -resize 512x512 -background none icon.png
+          magick icon.png -define icon:auto-resize=256,128,64,48,32,16 icon.ico
+          magick installerSidebar.svg -resize 164x314 installerSidebar.bmp
+          magick installerHeader.svg -resize 150x57 installerHeader.bmp
+
+      - name: Build Electron app (Mac)
+        if: matrix.os == 'macos-latest'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run dist:mac
+
+      - name: Build Electron app (Windows)
+        if: matrix.os == 'windows-latest'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run dist:win
+
+      - name: Upload artifacts (Mac)
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac-installers
+          path: |
+            dist/*.dmg
+            dist/*-mac.zip
+
+      - name: Upload artifacts (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installers
+          path: |
+            dist/*.exe
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Mac artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: mac-installers
+          path: dist/
+
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-installers
+          path: dist/
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          echo "## What's New" > CHANGELOG.txt
+          echo "" >> CHANGELOG.txt
+          git log $(git describe --tags --abbrev=0 HEAD^)..HEAD --pretty=format:"- %s" >> CHANGELOG.txt || echo "- Initial release" >> CHANGELOG.txt
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*.dmg
+            dist/*.zip
+            dist/*.exe
+          body_path: CHANGELOG.txt
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -16,72 +16,73 @@ Version 2.1.0 - Now available as a **Mac DMG** and **Windows EXE** installer!
 
 ## 📥 Installation
 
-> **⚠️ Have the source code?** You need to **build the app first**!
-> 👉 **See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md)** for step-by-step build instructions.
+**🎁 Download Pre-Built Installers (Recommended for End Users)**
 
-### 🍎 Mac - Super Simple!
+### Option 1: Download from GitHub Releases (No Node.js or npm needed!)
 
+**For End Users - Simple Installation:**
+
+1. Go to **[Releases](../../releases/latest)** page
+2. Download the installer for your platform:
+   - **Mac**: `Narrowcast-Pro-2.1.0.dmg` (120MB)
+   - **Windows**: `Narrowcast-Pro-Setup-2.1.0.exe` (100MB)
+3. Install and run - that's it!
+
+**Mac Installation:**
 ```
-1️⃣ Download Narrowcast Pro-2.1.0-mac.zip
-2️⃣ Unzip (double-click)
-3️⃣ Drag to Applications folder
-4️⃣ Right-click → Open
+1️⃣ Download .dmg file from Releases
+2️⃣ Open the DMG
+3️⃣ Drag Narrowcast Pro to Applications folder
+4️⃣ Launch from Applications
 5️⃣ Done! 🎉
 ```
 
-**First time:** Right-click + "Open" (after that, normal double-click works)
-
-### 🪟 Windows - Even Simpler!
-
-**Portable (No Installation!):**
+**Windows Installation:**
 ```
-1️⃣ Download Narrowcast-Pro-2.1.0-Portable.exe
-2️⃣ Double-click
-3️⃣ Done! 🎉
+1️⃣ Download Setup.exe from Releases
+2️⃣ Double-click the installer
+3️⃣ Follow the wizard (choose install location, create shortcuts)
+4️⃣ Launch from desktop or Start Menu
+5️⃣ Done! 🎉
 ```
 
-**Or with Installer (for shortcuts):**
-```
-1️⃣ Download Narrowcast-Pro-Setup-2.1.0.exe
-2️⃣ Run installer
-3️⃣ Click through wizard
-4️⃣ Done! 🎉
-```
+**No Node.js, no npm, no terminal commands needed!**
+
+First-time security prompts:
+- **Mac**: Right-click → "Open" (one time only)
+- **Windows**: Click "More info" → "Run anyway" if prompted
 
 **📖 See [INSTALL.md](INSTALL.md) for detailed installation instructions with troubleshooting!**
 
-### Build from Source (No Xcode/Visual Studio Required!)
+---
 
-**Prerequisites:** Only Node.js 14+ needed!
+### Option 2: Build from Source (For Developers)
 
+**Prerequisites:** Node.js 16+ and ImageMagick
+
+**Quick Build:**
 ```bash
-# Clone and install
+# Clone repository
 git clone <repository-url>
 cd Narrowcasting
-npm install
-cd client && npm install && cd ..
 
-# Build React app
-cd client && npm run build && cd ..
+# Install dependencies
+npm run install-all
 
-# Build for your platform (no code signing, no dev tools needed!)
-npm run dist:mac    # macOS: ZIP + DMG
-npm run dist:win    # Windows: Portable.exe + Setup.exe
-npm run dist:all    # Both platforms
+# Generate installer graphics
+cd build && ./generate-installer-graphics.sh && cd ..
 
-# Or run in development
-npm run electron:dev
+# Build installer for your platform
+npm run dist:mac    # macOS: Creates .dmg and .zip
+npm run dist:win    # Windows: Creates Setup.exe and Portable.exe
 ```
 
-**Output:**
-- **Mac**: `Narrowcast Pro-2.1.0-mac.zip` (recommended) + DMG
-- **Windows**: `Narrowcast-Pro-2.1.0-Portable.exe` (recommended) + Setup.exe
+**Output in `dist/` folder:**
+- **Mac**: `Narrowcast-Pro-2.1.0.dmg` + ZIP archive
+- **Windows**: `Narrowcast-Pro-Setup-2.1.0.exe` + Portable version
 
-**No code signing?** Apps work perfectly without it! Users may need to:
-- **Mac**: Right-click → Open (first time only)
-- **Windows**: Click "More info" → "Run anyway" if SmartScreen appears
-
-See [BUILD.md](BUILD.md) for detailed build instructions.
+**📖 See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for detailed build guide!**
+**📖 See [DISTRIBUTION.md](DISTRIBUTION.md) for release management and GitHub Actions setup!**
 
 ## 🚀 Quick Start Guide
 

@@ -33,6 +33,10 @@
     "electronVersion": "28.0.0",
     "asar": true,
     "compression": "normal",
+    "publish": {
+      "provider": "github",
+      "releaseType": "release"
+    },
     "directories": {
       "output": "dist",
       "buildResources": "build"
