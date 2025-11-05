@@ -13,6 +13,12 @@ let serverProcess;
 const PORT = process.env.PORT || 3001;
 const isDev = process.env.NODE_ENV !== 'production';
 
+// Configuration constants
+const SERVER_STARTUP_DELAY = 2000; // ms - Wait for server to initialize before creating window
+const SERVER_READY_RETRIES = 30; // Number of attempts to check if server is ready
+const SERVER_CHECK_INTERVAL = 1000; // ms - Interval between server ready checks
+const AUTO_REFRESH_INTERVAL = 5000; // ms - WebSocket auto-refresh interval (used in client)
+
 // Create the browser window
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -223,7 +229,7 @@ function stopServer() {
 }
 
 // Wait for server to be ready
-function waitForServer(url, retries = 30) {
+function waitForServer(url, retries = SERVER_READY_RETRIES) {
   return new Promise((resolve, reject) => {
     const checkServer = (retriesLeft) => {
       http.get(url, (res) => {
@@ -241,7 +247,7 @@ function waitForServer(url, retries = 30) {
     const retryCheck = (retriesLeft) => {
       if (retriesLeft > 0) {
         console.log(`Waiting for server... (${retriesLeft} retries left)`);
-        setTimeout(() => checkServer(retriesLeft - 1), 1000);
+        setTimeout(() => checkServer(retriesLeft - 1), SERVER_CHECK_INTERVAL);
       } else {
         console.error('Server failed to start');
         reject(new Error('Server failed to start'));
@@ -258,7 +264,7 @@ app.on('ready', () => {
   startServer();
 
   // Create window after a brief delay to let server initialize
-  setTimeout(createWindow, 2000);
+  setTimeout(createWindow, SERVER_STARTUP_DELAY);
 });
 
 app.on('window-all-closed', () => {

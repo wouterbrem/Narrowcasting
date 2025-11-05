@@ -5,6 +5,20 @@ client/node_modules/
 # Production builds
 client/build/
 dist/
+out/
+
+# Electron build artifacts
+*.dmg
+*.exe
+*.zip
+*.AppImage
+*.deb
+*.rpm
+*.snap
+
+# User data and uploads
+data/
+uploads/
 
 # Environment variables
 .env

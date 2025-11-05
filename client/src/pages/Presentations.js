@@ -6,7 +6,6 @@ import {
   Edit2,
   Trash2,
   X,
-  Play,
   AlertCircle,
   CheckCircle,
   ChevronUp,
@@ -433,14 +432,11 @@ function Presentations({ presentations, slides, devices }) {
                         <option value="">
                           {getAvailableSlides().length === 0 ? 'No more slides available' : 'Select a slide to add'}
                         </option>
-                        {getAvailableSlides().map((slide) => {
-                          const Icon = SLIDE_TYPE_ICONS[slide.type] || Code;
-                          return (
-                            <option key={slide.id} value={slide.id}>
-                              {slide.name} ({slide.type}) - {slide.duration}s
-                            </option>
-                          );
-                        })}
+                        {getAvailableSlides().map((slide) => (
+                          <option key={slide.id} value={slide.id}>
+                            {slide.name} ({slide.type}) - {slide.duration}s
+                          </option>
+                        ))}
                       </select>
                       <button
                         type="button"

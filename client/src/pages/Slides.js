@@ -244,8 +244,6 @@ function Slides({ slides }) {
   const renderTypeFields = () => {
     if (!selectedType) return null;
 
-    const typeConfig = SLIDE_TYPES[selectedType];
-
     return (
       <div className="form-fields">
         {/* Webpage fields */}

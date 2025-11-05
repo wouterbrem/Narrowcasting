@@ -1,5 +1,6 @@
 const cron = require('node-cron');
 const { v4: uuidv4 } = require('uuid');
+const logger = require('./logger');
 
 class ScheduleManager {
   constructor(chromecastManager) {
@@ -29,7 +30,7 @@ class ScheduleManager {
 
     // Create cron job
     const job = cron.schedule(cronExpression, async () => {
-      console.log(`Executing schedule: ${name}`);
+      logger.info(`Executing schedule: ${name}`);
       try {
         await this.chromecastManager.castToDevices(deviceIds, url);
 
@@ -40,7 +41,7 @@ class ScheduleManager {
           }, duration * 1000);
         }
       } catch (error) {
-        console.error(`Failed to execute schedule ${name}:`, error);
+        logger.error(`Failed to execute schedule ${name}:`, error);
       }
     });
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { systemAPI } from '../services/api';
 import { FileText, RefreshCw, Download, Filter, AlertCircle, CheckCircle, Info } from 'lucide-react';
 import './Logs.css';
@@ -11,8 +11,8 @@ function Logs() {
   const [lines, setLines] = useState(100);
   const [autoRefresh, setAutoRefresh] = useState(false);
 
-  // Fetch logs
-  const fetchLogs = async () => {
+  // Fetch logs (memoized to prevent infinite loops)
+  const fetchLogs = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -24,12 +24,12 @@ function Logs() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [logType, lines]);
 
   // Initial fetch
   useEffect(() => {
     fetchLogs();
-  }, [logType, lines]);
+  }, [fetchLogs]);
 
   // Auto-refresh
   useEffect(() => {
@@ -40,7 +40,7 @@ function Logs() {
     }, 5000); // Refresh every 5 seconds
 
     return () => clearInterval(interval);
-  }, [autoRefresh, logType, lines]);
+  }, [autoRefresh, fetchLogs]);
 
   // Download logs
   const handleDownload = () => {

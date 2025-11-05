@@ -143,7 +143,7 @@ app.post('/api/cast', async (req, res) => {
     const results = await chromecastManager.castToDevices(deviceIds, url, contentType);
     res.json({ success: true, results });
   } catch (error) {
-    console.error('Cast error:', error);
+    logger.error('Cast error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -160,7 +160,7 @@ app.post('/api/devices/stop', async (req, res) => {
     const results = await chromecastManager.stopDevices(deviceIds);
     res.json({ success: true, results });
   } catch (error) {
-    console.error('Stop error:', error);
+    logger.error('Stop error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -177,7 +177,7 @@ app.post('/api/devices/volume', async (req, res) => {
     const results = await chromecastManager.setVolume(deviceIds, level);
     res.json({ success: true, results });
   } catch (error) {
-    console.error('Volume error:', error);
+    logger.error('Volume error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -211,7 +211,7 @@ app.post('/api/slides', (req, res) => {
     broadcast({ type: 'slideCreated', slide });
     res.json({ success: true, slide });
   } catch (error) {
-    console.error('Slide creation error:', error);
+    logger.error('Slide creation error:', error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -223,7 +223,7 @@ app.put('/api/slides/:id', (req, res) => {
     broadcast({ type: 'slideUpdated', slide });
     res.json({ success: true, slide });
   } catch (error) {
-    console.error('Slide update error:', error);
+    logger.error('Slide update error:', error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -238,7 +238,7 @@ app.delete('/api/slides/:id', (req, res) => {
     broadcast({ type: 'slideDeleted', slideId: req.params.id });
     res.json({ success: true });
   } catch (error) {
-    console.error('Slide deletion error:', error);
+    logger.error('Slide deletion error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -246,11 +246,28 @@ app.delete('/api/slides/:id', (req, res) => {
 // Preview slide (returns HTML)
 app.get('/api/slides/:id/preview', (req, res) => {
   try {
-    const branding = req.query.branding ? JSON.parse(req.query.branding) : {};
+    let branding = {};
+
+    // Safely parse and validate branding JSON
+    if (req.query.branding) {
+      try {
+        const parsed = JSON.parse(req.query.branding);
+        // Validate it's an object and not null
+        if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
+          branding = parsed;
+        } else {
+          logger.warn('Invalid branding format received, using defaults');
+        }
+      } catch (parseError) {
+        logger.warn('Failed to parse branding JSON:', parseError.message);
+        // Continue with empty branding object
+      }
+    }
+
     const html = slideManager.generateSlideHtml(req.params.id, branding);
     res.type('html').send(html);
   } catch (error) {
-    console.error('Slide preview error:', error);
+    logger.error('Slide preview error:', error);
     res.status(400).send(`<html><body><h1>Error:</h1><p>${error.message}</p></body></html>`);
   }
 });
@@ -292,7 +309,7 @@ app.post('/api/presentations', (req, res) => {
     broadcast({ type: 'presentationCreated', presentation });
     res.json({ success: true, presentation });
   } catch (error) {
-    console.error('Presentation creation error:', error);
+    logger.error('Presentation creation error:', error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -304,7 +321,7 @@ app.put('/api/presentations/:id', (req, res) => {
     broadcast({ type: 'presentationUpdated', presentation });
     res.json({ success: true, presentation });
   } catch (error) {
-    console.error('Presentation update error:', error);
+    logger.error('Presentation update error:', error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -319,7 +336,7 @@ app.delete('/api/presentations/:id', (req, res) => {
     broadcast({ type: 'presentationDeleted', presentationId: req.params.id });
     res.json({ success: true });
   } catch (error) {
-    console.error('Presentation deletion error:', error);
+    logger.error('Presentation deletion error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -330,7 +347,7 @@ app.get('/api/presentations/:id/player', (req, res) => {
     const html = presentationManager.generatePresentationPlayerHtml(req.params.id);
     res.type('html').send(html);
   } catch (error) {
-    console.error('Presentation player error:', error);
+    logger.error('Presentation player error:', error);
     res.status(400).send(`<html><body><h1>Error:</h1><p>${error.message}</p></body></html>`);
   }
 });
@@ -365,7 +382,7 @@ app.post('/api/presentations/:id/cast', async (req, res) => {
 
     res.json({ success: true, results, playerUrl });
   } catch (error) {
-    console.error('Presentation cast error:', error);
+    logger.error('Presentation cast error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -393,7 +410,7 @@ app.post('/api/presentations/stop', async (req, res) => {
 
     res.json({ success: true, results });
   } catch (error) {
-    console.error('Presentation stop error:', error);
+    logger.error('Presentation stop error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -420,7 +437,7 @@ app.post('/api/groups', (req, res) => {
     broadcast({ type: 'groupCreated', group });
     res.json({ success: true, group });
   } catch (error) {
-    console.error('Group creation error:', error);
+    logger.error('Group creation error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -437,7 +454,7 @@ app.delete('/api/groups/:groupId', (req, res) => {
     broadcast({ type: 'groupDeleted', groupId: req.params.groupId });
     res.json({ success: true });
   } catch (error) {
-    console.error('Group deletion error:', error);
+    logger.error('Group deletion error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -458,7 +475,7 @@ app.post('/api/playlists', (req, res) => {
     const playlist = chromecastManager.createPlaylist(name, urls, interval);
     res.json({ success: true, playlist });
   } catch (error) {
-    console.error('Playlist creation error:', error);
+    logger.error('Playlist creation error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -474,7 +491,7 @@ app.delete('/api/playlists/:playlistId', (req, res) => {
     chromecastManager.deletePlaylist(req.params.playlistId);
     res.json({ success: true });
   } catch (error) {
-    console.error('Playlist deletion error:', error);
+    logger.error('Playlist deletion error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -492,7 +509,7 @@ app.post('/api/playlists/:playlistId/start', async (req, res) => {
     await chromecastManager.startPlaylist(playlistId, deviceIds);
     res.json({ success: true });
   } catch (error) {
-    console.error('Playlist start error:', error);
+    logger.error('Playlist start error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -510,7 +527,7 @@ app.post('/api/playlists/:playlistId/stop', async (req, res) => {
     await chromecastManager.stopPlaylist(playlistId, deviceIds);
     res.json({ success: true });
   } catch (error) {
-    console.error('Playlist stop error:', error);
+    logger.error('Playlist stop error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -531,7 +548,7 @@ app.post('/api/schedules', (req, res) => {
     const schedule = scheduleManager.createSchedule(name, deviceIds, url, cronExpression, duration);
     res.json({ success: true, schedule });
   } catch (error) {
-    console.error('Schedule creation error:', error);
+    logger.error('Schedule creation error:', error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -547,7 +564,7 @@ app.delete('/api/schedules/:scheduleId', (req, res) => {
     scheduleManager.deleteSchedule(req.params.scheduleId);
     res.json({ success: true });
   } catch (error) {
-    console.error('Schedule deletion error:', error);
+    logger.error('Schedule deletion error:', error);
     res.status(500).json({ error: error.message });
   }
 });

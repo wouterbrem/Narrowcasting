@@ -6,6 +6,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const logger = require('./logger');
 
 class BrandingManager {
   constructor() {
@@ -59,7 +60,7 @@ class BrandingManager {
       // Load or create branding
       await this.load();
     } catch (error) {
-      console.error('Failed to initialize branding manager:', error);
+      logger.error('Failed to initialize branding manager:', error);
       this.branding = { ...this.defaultBranding };
     }
   }
@@ -93,7 +94,7 @@ class BrandingManager {
         'utf8'
       );
     } catch (error) {
-      console.error('Failed to save branding:', error);
+      logger.error('Failed to save branding:', error);
       throw error;
     }
   }
@@ -162,7 +163,7 @@ class BrandingManager {
         const filepath = path.join(__dirname, '..', this.branding.logo.url);
         await fs.unlink(filepath);
       } catch (error) {
-        console.error('Failed to delete logo:', error);
+        logger.error('Failed to delete logo:', error);
       }
     }
 

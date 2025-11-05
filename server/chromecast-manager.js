@@ -3,6 +3,7 @@ const bonjour = require('bonjour')();
 const Client = require('castv2-client').Client;
 const DefaultMediaReceiver = require('castv2-client').DefaultMediaReceiver;
 const { v4: uuidv4 } = require('uuid');
+const logger = require('./logger');
 
 class ChromecastManager extends EventEmitter {
   constructor() {
@@ -29,13 +30,13 @@ class ChromecastManager extends EventEmitter {
       });
 
       this.browser.on('error', (error) => {
-        console.error('Bonjour Browser error:', error);
+        logger.error('Bonjour Browser error:', error);
       });
 
-      console.log('Chromecast discovery started');
+      logger.info('Chromecast discovery started');
     } catch (error) {
-      console.error('Failed to start discovery:', error);
-      console.log('Note: Discovery may not work in all network configurations');
+      logger.error('Failed to start discovery:', error);
+      logger.info('Note: Discovery may not work in all network configurations');
     }
   }
 
@@ -44,7 +45,7 @@ class ChromecastManager extends EventEmitter {
       try {
         this.browser.stop();
       } catch (e) {
-        console.error('Error stopping browser:', e);
+        logger.error('Error stopping browser:', e);
       }
       this.browser = null;
     }
@@ -54,7 +55,7 @@ class ChromecastManager extends EventEmitter {
       try {
         client.close();
       } catch (e) {
-        console.error('Error closing client:', e);
+        logger.error('Error closing client:', e);
       }
     });
 
@@ -64,7 +65,7 @@ class ChromecastManager extends EventEmitter {
     try {
       bonjour.destroy();
     } catch (e) {
-      console.error('Error destroying bonjour:', e);
+      logger.error('Error destroying bonjour:', e);
     }
   }
 
@@ -82,7 +83,7 @@ class ChromecastManager extends EventEmitter {
 
     this.devices.set(deviceId, device);
     this.emit('deviceFound', device);
-    console.log(`Device found: ${device.name} (${device.host})`);
+    logger.info(`Device found: ${device.name} (${device.host})`);
   }
 
   removeDevice(service) {
@@ -96,13 +97,13 @@ class ChromecastManager extends EventEmitter {
         try {
           this.clients.get(deviceId).close();
         } catch (e) {
-          console.error('Error closing client:', e);
+          logger.error('Error closing client:', e);
         }
         this.clients.delete(deviceId);
       }
 
       this.emit('deviceLost', deviceId);
-      console.log(`Device lost: ${deviceId}`);
+      logger.info(`Device lost: ${deviceId}`);
     }
   }
 
@@ -131,7 +132,7 @@ class ChromecastManager extends EventEmitter {
       });
 
       client.on('error', (err) => {
-        console.error(`Client error for ${deviceId}:`, err);
+        logger.error(`Client error for ${deviceId}:`, err);
         this.clients.delete(deviceId);
         reject(err);
       });
@@ -173,7 +174,7 @@ class ChromecastManager extends EventEmitter {
           });
         });
       } catch (error) {
-        console.error(`Failed to cast to ${deviceId}:`, error);
+        logger.error(`Failed to cast to ${deviceId}:`, error);
         results.push({ deviceId, success: false, error: error.message });
       }
     }
@@ -203,7 +204,7 @@ class ChromecastManager extends EventEmitter {
           });
         });
       } catch (error) {
-        console.error(`Failed to stop ${deviceId}:`, error);
+        logger.error(`Failed to stop ${deviceId}:`, error);
         results.push({ deviceId, success: false, error: error.message });
       }
     }
@@ -229,7 +230,7 @@ class ChromecastManager extends EventEmitter {
           });
         });
       } catch (error) {
-        console.error(`Failed to set volume for ${deviceId}:`, error);
+        logger.error(`Failed to set volume for ${deviceId}:`, error);
         results.push({ deviceId, success: false, error: error.message });
       }
     }

@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
+const logger = require('./logger');
 
 /**
  * Slide Manager
@@ -299,7 +300,7 @@ class SlideManager {
           const buttons = document.querySelectorAll(selector);
           for (const button of buttons) {
             if (button.offsetParent !== null) {
-              console.log('Auto-accepting cookie consent:', button);
+              logger.info('Auto-accepting cookie consent:', button);
               button.click();
               return;
             }
@@ -400,7 +401,7 @@ class SlideManager {
     }
 
     function onPlayerError(event) {
-      console.error('YouTube player error:', event.data);
+      logger.error('YouTube player error:', event.data);
       // Try to recover by reloading after 5 seconds
       setTimeout(() => {
         player.loadVideoById('${videoId}');
@@ -487,7 +488,7 @@ class SlideManager {
         document.getElementById('humidity').textContent = data.main.humidity + '% Humidity';
         document.getElementById('wind').textContent = Math.round(data.wind.speed * 3.6) + ' km/h';
       } catch (error) {
-        console.error('Weather fetch failed:', error);
+        logger.error('Weather fetch failed:', error);
         document.getElementById('location').textContent = 'Weather Unavailable';
       }
     }
@@ -605,7 +606,7 @@ class SlideManager {
           feedContainer.appendChild(itemEl);
         });
       } catch (error) {
-        console.error('RSS fetch failed:', error);
+        logger.error('RSS fetch failed:', error);
         document.getElementById('feed').innerHTML = '<div class="feed-item">Failed to load RSS feed</div>';
       }
     }

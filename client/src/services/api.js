@@ -301,7 +301,7 @@ export const getWebSocketUrl = () => {
   return `${protocol}//${host}`;
 };
 
-export default {
+const api = {
   device: deviceAPI,
   slide: slideAPI,
   presentation: presentationAPI,
@@ -310,3 +310,5 @@ export default {
   system: systemAPI,
   getWebSocketUrl,
 };
+
+export default api;

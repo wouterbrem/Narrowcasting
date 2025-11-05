@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
+const logger = require('./logger');
 
 /**
  * Presentation Manager
@@ -383,7 +384,7 @@ class PresentationManager {
 
     // Initialize presentation
     function init() {
-      console.log('Initializing presentation with', SLIDES.length, 'slides');
+      logger.info('Initializing presentation with', SLIDES.length, 'slides');
 
       // Create iframes for all slides
       SLIDES.forEach((slide, index) => {
@@ -406,7 +407,7 @@ class PresentationManager {
         // Track load status
         iframe.onload = () => {
           slideFrames[index].loaded = true;
-          console.log('Slide', index, 'loaded');
+          logger.info('Slide', index, 'loaded');
 
           // Start when first slide is loaded
           if (index === 0) {
@@ -416,7 +417,7 @@ class PresentationManager {
         };
 
         iframe.onerror = () => {
-          console.error('Failed to load slide', index);
+          logger.error('Failed to load slide', index);
         };
       });
 
@@ -427,11 +428,11 @@ class PresentationManager {
     // Show specific slide
     function showSlide(index) {
       if (index < 0 || index >= slideFrames.length) {
-        console.error('Invalid slide index:', index);
+        logger.error('Invalid slide index:', index);
         return;
       }
 
-      console.log('Showing slide', index);
+      logger.info('Showing slide', index);
 
       // Hide all slides
       slideFrames.forEach((frame, i) => {
@@ -492,7 +493,7 @@ class PresentationManager {
         if (SETTINGS.loop) {
           nextIndex = 0;
         } else {
-          console.log('Presentation finished (no loop)');
+          logger.info('Presentation finished (no loop)');
           progressBar.style.width = '100%';
           return;
         }
