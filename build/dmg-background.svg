@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="560" height="400" viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5F5F7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E8E8ED;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Subtle radial glow -->
+    <radialGradient id="glow" cx="50%" cy="30%">
+      <stop offset="0%" style="stop-color:#0071E3;stop-opacity:0.08" />
+      <stop offset="100%" style="stop-color:#0071E3;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Pattern overlay -->
+    <pattern id="gridPattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="0.8" fill="#0071E3" opacity="0.02"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="560" height="400" fill="url(#bgGradient)"/>
+  <rect width="560" height="400" fill="url(#glow)"/>
+  <rect width="560" height="400" fill="url(#gridPattern)"/>
+
+  <!-- Large decorative icon at top -->
+  <g transform="translate(200, 30)">
+    <!-- TV/Monitor with shadow -->
+    <g opacity="0.1">
+      <rect x="2" y="2" width="160" height="112" rx="8" fill="#000000"/>
+    </g>
+
+    <!-- Main TV/Monitor -->
+    <rect x="0" y="0" width="160" height="112" rx="8" fill="#0071E3" opacity="0.95"/>
+
+    <!-- Screen with gradient -->
+    <defs>
+      <linearGradient id="dmgScreen" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
+        <stop offset="50%" style="stop-color:#E3F2FD;stop-opacity:0.8" />
+        <stop offset="100%" style="stop-color:#BBDEFB;stop-opacity:0.9" />
+      </linearGradient>
+    </defs>
+    <rect x="12" y="12" width="136" height="80" rx="4" fill="url(#dmgScreen)"/>
+
+    <!-- Content on screen - broadcast icon -->
+    <g transform="translate(80, 52)">
+      <!-- Broadcast waves -->
+      <path d="M -30 0 Q -30 -16 -40 -24" stroke="#0071E3" stroke-width="4" fill="none"
+            stroke-linecap="round" opacity="0.6"/>
+      <path d="M -20 0 Q -20 -10 -26 -16" stroke="#0071E3" stroke-width="4" fill="none"
+            stroke-linecap="round" opacity="0.7"/>
+      <path d="M -10 0 Q -10 -6 -14 -10" stroke="#0071E3" stroke-width="4" fill="none"
+            stroke-linecap="round" opacity="0.8"/>
+
+      <path d="M 30 0 Q 30 -16 40 -24" stroke="#0071E3" stroke-width="4" fill="none"
+            stroke-linecap="round" opacity="0.6"/>
+      <path d="M 20 0 Q 20 -10 26 -16" stroke="#0071E3" stroke-width="4" fill="none"
+            stroke-linecap="round" opacity="0.7"/>
+      <path d="M 10 0 Q 10 -6 14 -10" stroke="#0071E3" stroke-width="4" fill="none"
+            stroke-linecap="round" opacity="0.8"/>
+
+      <!-- Central dot -->
+      <circle cx="0" cy="0" r="6" fill="#0071E3" opacity="0.9"/>
+    </g>
+
+    <!-- Stand base -->
+    <rect x="64" y="112" width="32" height="6" rx="2" fill="#0071E3" opacity="0.8"/>
+    <rect x="52" y="118" width="56" height="4" rx="2" fill="#0071E3" opacity="0.8"/>
+
+    <!-- Chromecast badge (larger) -->
+    <circle cx="135" cy="25" r="18" fill="#FF6B35" opacity="0.95"/>
+    <g transform="translate(135, 25)">
+      <text x="0" y="7" font-family="Arial, sans-serif" font-size="20" font-weight="bold"
+            fill="white" text-anchor="middle">C</text>
+    </g>
+  </g>
+
+  <!-- Product name and tagline -->
+  <g transform="translate(280, 170)">
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif"
+          font-size="32" font-weight="600" fill="#1D1D1F" text-anchor="middle">
+      Narrowcast Pro
+    </text>
+    <text x="0" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif"
+          font-size="14" font-weight="400" fill="#6E6E73" text-anchor="middle">
+      Professional Multi-Chromecast Digital Signage
+    </text>
+  </g>
+
+  <!-- Installation instruction -->
+  <g transform="translate(280, 340)">
+    <!-- Arrow -->
+    <path d="M -60 0 L -20 0 M -30 -8 L -20 0 L -30 8" stroke="#0071E3" stroke-width="2.5"
+          fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+
+    <text x="0" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif"
+          font-size="13" font-weight="500" fill="#6E6E73" text-anchor="middle">
+      Drag to Applications folder to install
+    </text>
+
+    <!-- Arrow -->
+    <path d="M 60 0 L 20 0 M 30 -8 L 20 0 L 30 8" stroke="#0071E3" stroke-width="2.5"
+          fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+  </g>
+
+  <!-- Decorative elements in corners -->
+  <g opacity="0.05">
+    <circle cx="40" cy="40" r="60" fill="#0071E3"/>
+    <circle cx="520" cy="360" r="50" fill="#0071E3"/>
+  </g>
+
+  <!-- Version and branding at bottom -->
+  <text x="280" y="385" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif"
+        font-size="10" fill="#86868B" text-anchor="middle">
+    Version 2.1.0
+  </text>
+</svg>

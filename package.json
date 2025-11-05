@@ -71,21 +71,25 @@
     "dmg": {
       "sign": false,
       "title": "${productName} ${version}",
+      "background": "build/dmg-background.png",
+      "icon": "build/icon.icns",
+      "iconSize": 120,
       "contents": [
         {
-          "x": 130,
-          "y": 220
+          "x": 150,
+          "y": 250,
+          "type": "file"
         },
         {
-          "x": 410,
-          "y": 220,
+          "x": 390,
+          "y": 250,
           "type": "link",
           "path": "/Applications"
         }
       ],
       "window": {
-        "width": 540,
-        "height": 380
+        "width": 560,
+        "height": 400
       }
     },
     "win": {
@@ -105,10 +109,23 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "perMachine": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Narrowcast Pro",
-      "runAfterFinish": true
+      "runAfterFinish": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerSidebar": "build/installerSidebar.bmp",
+      "installerHeader": "build/installerHeader.bmp",
+      "installerHeaderIcon": "build/icon.ico",
+      "license": "LICENSE",
+      "multiLanguageInstaller": false,
+      "deleteAppDataOnUninstall": false,
+      "displayLanguageSelector": false,
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "differentialPackage": true
     },
     "portable": {
       "artifactName": "${productName}-${version}-Portable.${ext}"
