@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 Documentation
+    url: https://github.com/wouterbrem/Narrowcasting/blob/main/README.md
+    about: Read the complete documentation
+  - name: 🚀 Installation Guide
+    url: https://github.com/wouterbrem/Narrowcasting/blob/main/INSTALL.md
+    about: Step-by-step installation instructions with troubleshooting
+  - name: ⚡ Quick Start Guide
+    url: https://github.com/wouterbrem/Narrowcasting/blob/main/QUICK_START.md
+    about: Quick guide to get started with Narrowcast Pro

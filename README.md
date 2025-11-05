@@ -1,8 +1,19 @@
 # Narrowcast Pro
 
+<div align="center">
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/wouterbrem/Narrowcasting?style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/wouterbrem/Narrowcasting/build-release.yml?style=for-the-badge&label=Build)
+![GitHub](https://img.shields.io/github/license/wouterbrem/Narrowcasting?style=for-the-badge)
+![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-blue?style=for-the-badge)
+
 **Professional multi-Chromecast narrowcasting system** with custom branding and advanced content management.
 
 Version 2.1.0 - Now available as a **Mac DMG** and **Windows EXE** installer!
+
+[Download](../../releases/latest) • [Documentation](INSTALL.md) • [Quick Start](QUICK_START.md) • [Report Bug](../../issues/new?template=bug_report.yml) • [Request Feature](../../issues/new?template=feature_request.yml)
+
+</div>
 
 ---
 

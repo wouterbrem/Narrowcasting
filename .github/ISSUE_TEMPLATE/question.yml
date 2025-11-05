@@ -1,0 +1,92 @@
+name: ❓ Question
+description: Ask a question about Narrowcast Pro
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question? We're here to help!
+
+        Before asking, please check:
+        - [Installation Guide (INSTALL.md)](https://github.com/wouterbrem/Narrowcasting/blob/main/INSTALL.md)
+        - [Quick Start Guide (QUICK_START.md)](https://github.com/wouterbrem/Narrowcasting/blob/main/QUICK_START.md)
+        - [README.md](https://github.com/wouterbrem/Narrowcasting/blob/main/README.md)
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: How do I...?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Question Category
+      description: What is your question about?
+      options:
+        - Installation
+        - Chromecasts not appearing
+        - Creating content/slides
+        - Presentations
+        - Branding/customization
+        - Building from source
+        - General usage
+        - Technical/development
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What Have You Tried?
+      description: Have you tried anything to solve this yourself?
+      placeholder: I tried... but...
+    validations:
+      required: false
+
+  - type: input
+    id: app-version
+    attributes:
+      label: Narrowcast Pro Version
+      description: What version are you using?
+      placeholder: e.g., 2.1.0
+    validations:
+      required: false
+
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: Operating System
+      description: What OS are you using?
+      options:
+        - macOS
+        - Windows
+        - Linux (built from source)
+        - Not applicable
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any screenshots or additional information
+      placeholder: Add any other context here
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm
+      options:
+        - label: I have checked the documentation (INSTALL.md, README.md, QUICK_START.md)
+          required: true
+        - label: I have searched existing issues for similar questions
+          required: true
