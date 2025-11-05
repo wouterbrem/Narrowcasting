@@ -4,6 +4,7 @@ const http = require('http');
 const WebSocket = require('ws');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const multer = require('multer');
 const logger = require('./logger');
 const ChromecastManager = require('./chromecast-manager');
@@ -17,6 +18,51 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 const PORT = process.env.PORT || 3001;
+
+/**
+ * Get the server's local IP address
+ * Chromecasts need a network-accessible IP, not localhost
+ */
+function getServerIPAddress() {
+  // Allow override via environment variable
+  if (process.env.SERVER_HOST) {
+    return process.env.SERVER_HOST;
+  }
+
+  const interfaces = os.networkInterfaces();
+
+  // Try to find a non-internal IPv4 address
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      // Skip internal (loopback) and IPv6 addresses
+      if (iface.family === 'IPv4' && !iface.internal) {
+        logger.info(`Using network interface ${name}: ${iface.address}`);
+        return iface.address;
+      }
+    }
+  }
+
+  // Fallback to localhost (won't work for Chromecasts, but better than crashing)
+  logger.warn('Could not determine server IP address, using localhost. Casting may not work!');
+  logger.warn('Set SERVER_HOST environment variable to fix this.');
+  return 'localhost';
+}
+
+const SERVER_HOST = getServerIPAddress();
+logger.info(`Server host: ${SERVER_HOST}:${PORT}`);
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('Unhandled Promise Rejection:', reason);
+  console.error('Unhandled Promise Rejection at:', promise, 'reason:', reason);
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  logger.error('Uncaught Exception:', error);
+  console.error('Uncaught Exception:', error);
+  // Don't exit the process - try to continue running
+});
 
 // Middleware
 app.use(cors());
@@ -87,7 +133,8 @@ wss.on('connection', (ws) => {
 
   ws.on('close', () => {
     logger.info('WebSocket client disconnected');
-    logger.activity('WS_CLIENT_DISCONNECTED', { clients: wss.clients.size - 1 });
+    // Client is already removed from wss.clients when close event fires
+    logger.activity('WS_CLIENT_DISCONNECTED', { clients: wss.clients.size });
   });
 
   ws.on('error', (error) => {
@@ -431,9 +478,11 @@ app.post('/api/presentations/:id/cast', async (req, res) => {
       return res.status(400).json({ error: 'deviceIds array is required' });
     }
 
-    // Generate player URL
-    const baseUrl = `http://${req.hostname}:${PORT}`;
-    const playerUrl = `${baseUrl}/api/presentations/${presentationId}/player`;
+    // Generate player URL using server's IP address (not req.hostname)
+    // Chromecasts need to be able to reach this URL from the network
+    const playerUrl = `http://${SERVER_HOST}:${PORT}/api/presentations/${presentationId}/player`;
+
+    logger.info(`Casting presentation ${presentationId} to ${deviceIds.length} device(s): ${playerUrl}`);
 
     // Cast to devices
     const results = await chromecastManager.castToDevices(deviceIds, playerUrl, 'text/html');
@@ -803,7 +852,14 @@ server.listen(PORT, () => {
   logger.info(`Server running on port ${PORT}`);
   logger.info('Starting Chromecast discovery...');
   logger.activity('SERVER_STARTED', { port: PORT, environment: process.env.NODE_ENV || 'development' });
-  chromecastManager.startDiscovery();
+
+  // Start discovery with error handling
+  try {
+    chromecastManager.startDiscovery();
+  } catch (error) {
+    logger.error('Failed to start Chromecast discovery:', error);
+    console.error('Failed to start Chromecast discovery:', error);
+  }
 });
 
 // Graceful shutdown
