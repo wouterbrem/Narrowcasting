@@ -33,7 +33,9 @@ Version 2.1.0 - Now available as a **Mac DMG** and **Windows EXE** installer!
 4. **Allow through Windows Firewall** when prompted (required for Chromecast)
 5. Launch from Start Menu or Desktop shortcut
 
-### Build from Source
+### Build from Source (No Xcode/Visual Studio Required!)
+
+**Prerequisites:** Only Node.js 14+ needed!
 
 ```bash
 # Clone and install
@@ -42,14 +44,27 @@ cd Narrowcasting
 npm install
 cd client && npm install && cd ..
 
-# Build for your platform
-npm run dist:mac    # macOS DMG
-npm run dist:win    # Windows EXE
+# Build React app
+cd client && npm run build && cd ..
+
+# Build for your platform (no code signing, no dev tools needed!)
+npm run dist:mac    # macOS: ZIP + DMG
+npm run dist:win    # Windows: Portable.exe + Setup.exe
 npm run dist:all    # Both platforms
 
 # Or run in development
 npm run electron:dev
 ```
+
+**Output:**
+- **Mac**: `Narrowcast Pro-2.1.0-mac.zip` (recommended) + DMG
+- **Windows**: `Narrowcast-Pro-2.1.0-Portable.exe` (recommended) + Setup.exe
+
+**No code signing?** Apps work perfectly without it! Users may need to:
+- **Mac**: Right-click → Open (first time only)
+- **Windows**: Click "More info" → "Run anyway" if SmartScreen appears
+
+See [BUILD.md](BUILD.md) for detailed build instructions.
 
 ## 🚀 Quick Start Guide
 
