@@ -16,6 +16,9 @@ Version 2.1.0 - Now available as a **Mac DMG** and **Windows EXE** installer!
 
 ## 📥 Installation
 
+> **⚠️ Heb je de source code?** Dan moet je eerst de app **bouwen**!
+> 👉 **Zie [BUILD_INSTRUCTIES.md](BUILD_INSTRUCTIES.md)** voor stap-voor-stap build instructies.
+
 ### 🍎 Mac - Super Simpel!
 
 ```
