@@ -1,246 +1,282 @@
-# Narrowcast Pro - Professional Multi-Chromecast Narrowcasting System
+# Narrowcast Pro
 
-**Status: v2.1 MVP - Working End-to-End! 🎉**
+**Professional multi-Chromecast narrowcasting system** with custom branding and advanced content management.
 
-A professional narrowcasting solution built with **senior full-stack developer approach**: clean architecture, reusable components, proper separation of concerns, and production-ready patterns.
+Version 2.1.0 - Now available as a **Mac DMG** and **Windows EXE** installer!
 
-## 🚀 Quick Start (2 Commands!)
+## 🎉 Features
+
+- 🖥️ **Multi-Chromecast Control** - Manage multiple Chromecast devices from one interface
+- 📊 **9 Slide Types** - Web pages, YouTube, Weather, RSS feeds, Clock, Images, Social media, News, Custom HTML
+- 🎨 **Custom Branding** - Add your logo, custom colors, and text overlays
+- 📽️ **Presentation Builder** - Create multi-slide presentations with customizable durations
+- 📊 **Activity Logging** - Comprehensive logging for troubleshooting
+- 🌐 **Server-side Rendering** - Optimized performance with lightweight client
+- 💻 **Desktop App** - Native Mac and Windows applications
+
+## 📥 Installation
+
+### macOS (Recommended)
+
+1. Download `Narrowcast-Pro-2.1.0.dmg` from releases
+2. Open the DMG file
+3. Drag **Narrowcast Pro** to your Applications folder
+4. Launch from Applications
+5. **Grant network permissions** when prompted (required for Chromecast discovery)
+6. If you see "App from unidentified developer", go to System Preferences → Security & Privacy → Click "Open Anyway"
+
+### Windows
+
+1. Download `Narrowcast-Pro-Setup-2.1.0.exe` from releases
+2. Run the installer
+3. Follow the installation wizard
+4. **Allow through Windows Firewall** when prompted (required for Chromecast)
+5. Launch from Start Menu or Desktop shortcut
+
+### Build from Source
 
 ```bash
-# 1. Install (backend + frontend)
-npm run install-all
+# Clone and install
+git clone <repository-url>
+cd Narrowcasting
+npm install
+cd client && npm install && cd ..
 
-# 2. Start both servers
+# Build for your platform
+npm run dist:mac    # macOS DMG
+npm run dist:win    # Windows EXE
+npm run dist:all    # Both platforms
+
+# Or run in development
+npm run electron:dev
+```
+
+## 🚀 Quick Start Guide
+
+### 1. Launch the App
+- Double-click **Narrowcast Pro** from Applications (Mac) or Start Menu (Windows)
+- The app opens automatically at `http://localhost:3001`
+
+### 2. Discover Chromecasts
+- Chromecasts appear automatically in the **Dashboard**
+- Make sure your computer and Chromecasts are on the **same Wi-Fi network**
+- Grant network permissions if prompted
+
+### 3. Create Content
+
+#### Create Slides
+1. Go to **Slides** page
+2. Click **Create Slide**
+3. Choose from 9 slide types:
+   - **Web Page** - Any website
+   - **YouTube** - Videos or live streams
+   - **Weather** - Current weather & forecast
+   - **RSS Feed** - News or blog feeds
+   - **Clock** - Current time & date
+   - **Image** - Photos or slideshows
+   - **Social Media** - Twitter, Instagram, Facebook
+   - **News** - Latest headlines
+   - **Custom HTML** - Your own HTML/CSS/JS
+4. Fill in the details and click **Create**
+
+#### Build Presentations
+1. Go to **Presentations** page
+2. Click **Create Presentation**
+3. Add slides from your library
+4. Reorder with up/down buttons
+5. Set duration for each slide
+6. Optionally enable custom branding
+7. Click **Create Presentation**
+
+### 4. Customize Branding (Optional)
+1. Go to **Branding** page
+2. **Upload Logo** - PNG, JPG, or SVG (max 5MB)
+3. **Set Colors** - 5 brand colors with color pickers
+4. **Text Overlay** - Add branded text
+5. **Preview** - See how it looks
+6. Click **Save Changes**
+
+### 5. Cast to Displays
+1. Go to **Dashboard**
+2. Select one or more Chromecasts
+3. Choose a presentation
+4. Click **Cast to Selected Devices**
+5. Watch it play on your displays!
+
+## 📺 Slide Types Explained
+
+| Type | Description | Options |
+|------|-------------|---------|
+| **Web Page** | Display any website | Auto cookie consent |
+| **YouTube** | Videos or livestreams | Auto-play, loop |
+| **Weather** | Weather forecast | Location, units (C/F) |
+| **RSS Feed** | News/blog feeds | Max items, sources |
+| **Clock** | Current time & date | 12/24h format |
+| **Image** | Photos or slideshow | Fit options, multiple URLs |
+| **Social** | Social media feeds | Twitter, Instagram, Facebook |
+| **News** | News headlines | Multiple sources |
+| **Custom HTML** | Your own content | Full HTML/CSS/JS |
+
+## 🎨 Custom Branding
+
+Make presentations match your brand!
+
+### Logo
+- **Upload**: PNG, JPG, SVG (max 5MB)
+- **Position**: Top/Bottom Left/Right, Center
+- **Size**: Small (80px), Medium (120px), Large (180px)
+
+### Colors
+- **Primary** - Main brand color
+- **Secondary** - Secondary color
+- **Background** - Background color
+- **Text** - Text color
+- **Accent** - Highlights color
+
+All colors support hex codes and visual color pickers.
+
+### Text Overlay
+- Custom text content
+- 5 position options
+- 3 size options
+
+All branding is applied **automatically** to every presentation!
+
+## 🔧 Troubleshooting
+
+### Chromecasts Not Showing Up?
+
+**Check Network:**
+- Are you on the **same Wi-Fi** as your Chromecasts?
+- Some corporate networks block device discovery
+
+**Check Permissions:**
+- **Mac**: System Preferences → Security & Privacy → Firewall → Allow Narrowcast Pro
+- **Windows**: Allow Node.js through Windows Firewall (both Private and Public)
+
+**Try This:**
+1. Quit and restart Narrowcast Pro
+2. Check the **Logs** page in the app
+3. Make sure Chromecasts are powered on and connected
+
+### Slides Not Loading?
+
+1. Go to **Logs** page to see detailed errors
+2. Check if URLs are accessible from your network
+3. For YouTube: ensure video is embeddable (not age-restricted)
+
+### App Won't Start?
+
+**Mac:**
+- Right-click → Open (if "unidentified developer" warning)
+- Or: System Preferences → Security & Privacy → Click "Open Anyway"
+
+**Windows:**
+- Run as Administrator
+- Check Windows Defender didn't block it
+
+### Where Are My Logs?
+
+**In the App:**
+- Go to Logs page
+
+**On Disk:**
+- **Mac**: `~/Library/Application Support/Narrowcast Pro/logs/`
+- **Windows**: `%APPDATA%\Narrowcast Pro\logs\`
+
+## 🛠️ Development
+
+### Prerequisites
+- Node.js 14+
+- npm 6+
+
+### Development Mode
+```bash
+# Install dependencies
+npm install
+cd client && npm install && cd ..
+
+# Run in development (auto-reload)
+npm run electron:dev
+
+# Or run server and client separately
 npm run dev
 ```
 
-Then open: **http://localhost:3000**
-
----
-
-## ✅ What Works Right Now
-
-### You Can:
-1. ✅ See all Chromecasts on your network (auto-discovery)
-2. ✅ Create slides via API (9 types: Web, YouTube, Weather, RSS, Clock, etc.)
-3. ✅ Create presentations via API (group slides with rotation)
-4. ✅ **Cast presentations to multiple Chromecasts from Dashboard**
-5. ✅ Stop playback from Dashboard
-6. ✅ Real-time device updates
-7. ✅ Preview slides/presentations in browser
-
-### Backend (100% Complete):
-- 9 slide content types with automatic rendering
-- Automatic cookie consent handling
-- YouTube loop with iframe API integration
-- Branding wrapper on all slides
-- Presentation system with auto-rotation
-- Multi-Chromecast discovery (Bonjour)
-- Complete REST API + WebSocket
-
-### Frontend (MVP Complete):
-- Professional API service layer (clean abstraction)
-- WebSocket hook with auto-reconnection
-- Dashboard with device management
-- Cast presentations to Chromecasts **from the UI**
-- Real-time updates
-
----
-
-## 📺 Example: Create & Cast in 30 Seconds
-
+### Building Installers
 ```bash
-# 1. Create a clock slide
-SLIDE_ID=$(curl -s -X POST http://localhost:3001/api/slides \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Office Clock",
-    "type": "clock",
-    "duration": 10,
-    "config": {"format": "24h", "showDate": true}
-  }' | jq -r '.slide.id')
+# Build client first
+npm run build
 
-# 2. Create a presentation
-PRES_ID=$(curl -s -X POST http://localhost:3001/api/presentations \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"name\": \"Test Presentation\",
-    \"slides\": [{\"slideId\": \"$SLIDE_ID\", \"duration\": 10}],
-    \"branding\": {\"enabled\": true, \"text\": \"My Company\"}
-  }" | jq -r '.presentation.id')
+# Build macOS DMG (on Mac only)
+npm run dist:mac
 
-# 3. Cast to Chromecasts (or use Dashboard UI!)
-curl -X POST http://localhost:3001/api/presentations/$PRES_ID/cast \
-  -H "Content-Type: application/json" \
-  -d '{"deviceIds": ["your-device-id"]}'
+# Build Windows EXE (on Windows or with Wine)
+npm run dist:win
+
+# Build both (requires both platforms or CI)
+npm run dist:all
+
+# Test packaging without installer
+npm run pack
 ```
 
-Or just use the **Dashboard** → Select devices → Select presentation → Click "Cast"!
+### Project Structure
+```
+Narrowcasting/
+├── electron/              # Electron main process
+│   └── main.js
+├── server/                # Express backend
+│   ├── index.js
+│   ├── chromecast-manager.js
+│   ├── slide-manager.js
+│   ├── presentation-manager.js
+│   ├── branding-manager.js
+│   └── logger.js
+├── client/                # React frontend
+│   ├── src/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   └── hooks/
+│   └── build/
+├── build/                 # App icons & resources
+├── data/                  # Configuration storage
+├── uploads/               # User uploads (logos)
+├── logs/                  # Application logs
+└── dist/                  # Built installers (.dmg, .exe)
+```
+
+## 📦 Tech Stack
+
+- **Desktop**: Electron
+- **Frontend**: React, React Router
+- **Backend**: Node.js, Express, WebSocket
+- **Chromecast**: castv2-client, Bonjour (mDNS)
+- **Logging**: Winston
+- **File Uploads**: Multer
+- **Packaging**: electron-builder
+
+## 🔐 Network & Security
+
+### Required Network Access
+- **mDNS/Bonjour**: For Chromecast discovery
+- **Local Network**: Communication with Chromecasts
+- **HTTP Server**: Port 3001 (localhost only by default)
+
+### Firewall Rules
+The app needs to accept incoming connections for Chromecast communication. You'll be prompted to allow this on first launch.
+
+## 📝 License
+
+MIT License
+
+## 🤝 Support
+
+For issues or questions:
+1. Check the **Logs** page in the app
+2. Review this README
+3. Open an issue on GitHub
 
 ---
 
-## 🎨 9 Slide Content Types
-
-### 1. **Web Page** - Any URL with cookie consent handling
-```javascript
-{ "type": "webpage", "config": { "url": "https://example.com", "handleCookieConsent": true }}
-```
-
-### 2. **YouTube** - Videos/livestreams with loop
-```javascript
-{ "type": "youtube", "config": { "url": "https://youtube.com/watch?v=...", "loop": true }}
-```
-
-### 3. **Weather** - Beautiful widget with OpenWeather API
-```javascript
-{ "type": "weather", "config": { "location": "Amsterdam", "apiKey": "..." }}
-```
-
-### 4. **RSS Feed** - Automatic RSS reader
-```javascript
-{ "type": "rss", "config": { "feedUrl": "https://...", "maxItems": 5 }}
-```
-
-### 5. **Clock** - Digital clock with date
-```javascript
-{ "type": "clock", "config": { "format": "24h", "timezone": "Europe/Amsterdam" }}
-```
-
-### 6. **Image** - Single or slideshow
-```javascript
-{ "type": "image", "config": { "urls": ["url1", "url2"], "slideshowInterval": 5 }}
-```
-
-### 7-9. **Social**, **News**, **Custom HTML** - Frameworks ready
-
----
-
-## 📁 Architecture (Professional Approach)
-
-```
-├── server/                     # Backend (Node.js)
-│   ├── index.js               # REST API + WebSocket
-│   ├── slide-manager.js       # 9 content types
-│   ├── presentation-manager.js # Composition + player
-│   └── chromecast-manager.js  # Device discovery
-│
-└── client/src/                # Frontend (React)
-    ├── services/
-    │   └── api.js             # Clean API abstraction
-    ├── hooks/
-    │   └── useWebSocket.js    # Auto-reconnecting WS hook
-    ├── pages/
-    │   ├── Dashboard.js       # Working MVP!
-    │   ├── Slides.js          # Placeholder
-    │   └── Presentations.js   # Placeholder
-    └── App.js                 # Main app
-```
-
-**Key Principles:**
-- Services → Hooks → Components → Pages
-- Reusable, typed, error-handled
-- Real-time via WebSocket
-
----
-
-## 🎯 Complete API
-
-### Slides
-```bash
-GET    /api/slides              # List all
-POST   /api/slides              # Create
-PUT    /api/slides/:id          # Update
-DELETE /api/slides/:id          # Delete
-GET    /api/slides/:id/preview  # Preview HTML
-```
-
-### Presentations
-```bash
-GET    /api/presentations                # List all
-POST   /api/presentations                # Create
-PUT    /api/presentations/:id            # Update
-DELETE /api/presentations/:id            # Delete
-GET    /api/presentations/:id/player     # Player HTML
-POST   /api/presentations/:id/cast       # Cast to devices!
-```
-
-### Devices
-```bash
-GET    /api/devices            # List Chromecasts
-POST   /api/devices/stop       # Stop playback
-POST   /api/devices/volume     # Volume control
-```
-
-### System
-```bash
-GET    /api/health             # Health check
-GET    /api/statistics         # Stats
-```
-
----
-
-## 🎓 Technical Highlights
-
-### Cookie Consent Handler
-Automatically clicks accept buttons on websites using 10+ selectors.
-
-### YouTube Loop
-Uses iframe API with error recovery and manual fallback.
-
-### Presentation Player
-Advanced player with progress bar, keyboard controls, auto-pause/resume.
-
-### Branding
-Customizable wrapper on all slides (logo, text, position, colors).
-
-### WebSocket Hook
-Auto-reconnecting (max 5 attempts) with automatic state management.
-
----
-
-## 💡 Use Cases
-
-**Corporate**: Reception displays, meeting rooms, office dashboards
-**Retail**: Product displays, promotions, digital signage
-**Restaurants**: Menu boards, specials, wait times
-**Healthcare**: Queue management, information displays
-**Education**: Campus announcements, event schedules
-
----
-
-## 🚧 Next Phase (Frontend UI)
-
-Currently slides/presentations are created via API. Next:
-
-- [ ] Full Slides management UI (create/edit/delete with forms)
-- [ ] Full Presentations management UI (drag-drop builder)
-- [ ] Visual presentation editor
-- [ ] Template library
-- [ ] Electron desktop app
-
----
-
-## 📖 More Documentation
-
-- **README-V2.md**: Detailed backend documentation
-- **Source Code**: Extensive JSDoc comments
-
----
-
-## 🎉 Try It Now!
-
-```bash
-npm run dev  # Start both servers
-```
-
-Then:
-1. Open http://localhost:3000
-2. See your Chromecasts in Dashboard
-3. Create slides/presentations via API (see examples in Slides/Presentations pages)
-4. Cast from Dashboard UI!
-
----
-
-**Built with ❤️ using professional full-stack patterns**
-
-Clean code • Proper architecture • Production-ready • Real-time updates
+**Narrowcast Pro v2.1.0** - Professional Narrowcasting Made Simple 🎉
