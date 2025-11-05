@@ -22,16 +22,88 @@ Narrowcast Pro is a desktop app that lets you **control multiple Chromecast devi
 
 ## 📥 Where to Download
 
-**Option 1: Download Pre-Built App (Recommended)**
+> **⚠️ IMPORTANT: First Release Coming Soon!**
+>
+> The [Releases page](../../releases) is currently empty because the first official release hasn't been created yet.
+>
+> **For now, you have two options:**
+> 1. **Wait** for the first release (coming soon!)
+> 2. **Build from source** yourself (see below)
 
-Go to the [**Releases page**](../../releases/latest) and download:
+---
 
-- **For Mac**: Download `Narrowcast-Pro-2.1.0.dmg` (~120 MB)
-- **For Windows**: Download `Narrowcast-Pro-Setup-2.1.0.exe` (~100 MB)
+### Option 1: Download Pre-Built App (Coming Soon!) 🎁
 
-**Option 2: Build from Source (Advanced Users Only)**
+**When the first release is published**, you'll be able to download:
 
-See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) if you want to build it yourself.
+**For Mac:**
+- File: `Narrowcast-Pro-2.1.0.dmg` (~120 MB)
+- Location: [Releases page](../../releases/latest)
+
+**For Windows:**
+- File: `Narrowcast-Pro-Setup-2.1.0.exe` (~100 MB)
+- Location: [Releases page](../../releases/latest)
+
+**How to create the first release:**
+
+The project owner can create the first release by running:
+```bash
+git tag v2.1.0
+git push origin v2.1.0
+```
+
+GitHub Actions will automatically build installers for both Mac and Windows (~15 minutes), then create a release with download links!
+
+---
+
+### Option 2: Build from Source (Available Now) 🔨
+
+**You can build Narrowcast Pro yourself right now!**
+
+This requires some technical knowledge, but the process is well-documented.
+
+**What you need:**
+- Node.js 16+ installed ([download here](https://nodejs.org/))
+- ImageMagick installed (for graphics)
+  - Mac: `brew install imagemagick`
+  - Windows: `choco install imagemagick`
+
+**Quick build process:**
+```bash
+# 1. Clone repository
+git clone [repository-url]
+cd Narrowcasting
+
+# 2. Install dependencies
+npm run install-all
+
+# 3. Generate installer graphics
+cd build
+./generate-installer-graphics.sh
+cd ..
+
+# 4. Build installer
+npm run dist:mac    # For Mac (creates DMG)
+npm run dist:win    # For Windows (creates EXE)
+```
+
+**Result:** Installers will be in the `dist/` folder!
+
+**📖 Full instructions:** See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for detailed step-by-step guide.
+
+---
+
+### Recommended: Wait for Official Release
+
+**For most users**, we recommend waiting for the official release. It will be:
+- ✅ Pre-built and ready to install
+- ✅ No technical knowledge required
+- ✅ Just download and double-click
+- ✅ Tested and verified
+
+**The rest of this guide assumes you downloaded a pre-built installer.**
+
+If you built from source, you already have the app and can skip to the "First Steps After Installation" section!
 
 ---
 

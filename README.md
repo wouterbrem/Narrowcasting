@@ -39,17 +39,33 @@ Create content (web pages, weather, news, videos, custom slides) and display it 
 
 ## 📥 Installation
 
-**🎁 Download Pre-Built Installers (Recommended for End Users)**
+> **⚠️ IMPORTANT: First Release Coming Soon!**
+>
+> The [Releases page](../../releases) is currently empty. The first official release hasn't been created yet.
+>
+> **Your options:**
+> - **Wait for the release** (recommended for non-technical users)
+> - **Build from source** (available now - see Option 2 below)
+>
+> **To create the first release:**
+> ```bash
+> git tag v2.1.0 && git push origin v2.1.0
+> ```
+> GitHub Actions will automatically build installers (~15 minutes)!
 
-### Option 1: Download from GitHub Releases (No Node.js or npm needed!)
+---
 
-**For End Users - Simple Installation:**
+### Option 1: Download Pre-Built Installers (Coming Soon! 🎁)
+
+**Once released, installation will be super simple:**
 
 1. Go to **[Releases](../../releases/latest)** page
 2. Download the installer for your platform:
    - **Mac**: `Narrowcast-Pro-2.1.0.dmg` (120MB)
    - **Windows**: `Narrowcast-Pro-Setup-2.1.0.exe` (100MB)
 3. Install and run - that's it!
+
+**No Node.js, no npm, no terminal commands needed!**
 
 **Mac Installation:**
 ```
