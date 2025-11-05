@@ -1,71 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import './App.css';
+import { useNarrowcastWebSocket } from './hooks/useWebSocket';
 import Dashboard from './pages/Dashboard';
-import ContentBuilder from './pages/ContentBuilder';
-import Playlists from './pages/Playlists';
-import Schedule from './pages/Schedule';
-import Groups from './pages/Groups';
-import { MonitorPlay, Layout, List, Calendar, Users } from 'lucide-react';
+import Slides from './pages/Slides';
+import Presentations from './pages/Presentations';
+import { MonitorPlay, Layers, Presentation, Activity } from 'lucide-react';
 
 function App() {
-  const [devices, setDevices] = useState([]);
-  const [wsConnected, setWsConnected] = useState(false);
-
-  useEffect(() => {
-    // Establish WebSocket connection
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.hostname}:3001`;
-    const ws = new WebSocket(wsUrl);
-
-    ws.onopen = () => {
-      console.log('WebSocket connected');
-      setWsConnected(true);
-    };
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-
-      switch (data.type) {
-        case 'devices':
-          setDevices(data.devices);
-          break;
-        case 'deviceFound':
-          setDevices(prev => [...prev, data.device]);
-          break;
-        case 'deviceLost':
-          setDevices(prev => prev.filter(d => d.id !== data.deviceId));
-          break;
-        case 'deviceStatus':
-          setDevices(prev => prev.map(d =>
-            d.id === data.deviceId ? { ...d, status: data.status } : d
-          ));
-          break;
-        default:
-          break;
-      }
-    };
-
-    ws.onclose = () => {
-      console.log('WebSocket disconnected');
-      setWsConnected(false);
-    };
-
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    return () => {
-      ws.close();
-    };
-  }, []);
+  const {
+    isConnected,
+    devices,
+    slides,
+    presentations,
+    statistics
+  } = useNarrowcastWebSocket();
 
   const navigation = [
     { path: '/', label: 'Dashboard', icon: MonitorPlay },
-    { path: '/content', label: 'Content Builder', icon: Layout },
-    { path: '/playlists', label: 'Playlists', icon: List },
-    { path: '/schedule', label: 'Schedule', icon: Calendar },
-    { path: '/groups', label: 'Groups', icon: Users },
+    { path: '/slides', label: 'Slides', icon: Layers },
+    { path: '/presentations', label: 'Presentations', icon: Presentation },
   ];
 
   return (
@@ -75,7 +29,7 @@ function App() {
           <div className="sidebar-header">
             <div className="logo">
               <MonitorPlay size={32} strokeWidth={1.5} />
-              <span>Cast Control</span>
+              <span>Narrowcast Pro</span>
             </div>
           </div>
 
@@ -95,22 +49,36 @@ function App() {
 
           <div className="sidebar-footer">
             <div className="status-indicator">
-              <div className={`status-dot ${wsConnected ? 'connected' : 'disconnected'}`} />
-              <span>{wsConnected ? 'Connected' : 'Disconnected'}</span>
+              <div className={`status-dot ${isConnected ? 'connected' : 'disconnected'}`} />
+              <span>{isConnected ? 'Connected' : 'Disconnected'}</span>
             </div>
             <div className="device-count">
+              <Activity size={14} />
               {devices.length} {devices.length === 1 ? 'Device' : 'Devices'}
             </div>
+            {statistics && (
+              <div className="stats-summary">
+                <div>{slides.length} Slides</div>
+                <div>{presentations.length} Presentations</div>
+              </div>
+            )}
           </div>
         </aside>
 
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<Dashboard devices={devices} />} />
-            <Route path="/content" element={<ContentBuilder devices={devices} />} />
-            <Route path="/playlists" element={<Playlists devices={devices} />} />
-            <Route path="/schedule" element={<Schedule devices={devices} />} />
-            <Route path="/groups" element={<Groups devices={devices} />} />
+            <Route
+              path="/"
+              element={<Dashboard devices={devices} presentations={presentations} slides={slides} />}
+            />
+            <Route
+              path="/slides"
+              element={<Slides slides={slides} />}
+            />
+            <Route
+              path="/presentations"
+              element={<Presentations presentations={presentations} slides={slides} devices={devices} />}
+            />
           </Routes>
         </main>
       </div>

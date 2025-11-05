@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
-import { presentationAPI, deviceAPI } from '../services/api';
+import axios from 'axios';
 import {
   MonitorPlay,
-  Play,
+  Cast,
   StopCircle,
+  Volume2,
   Wifi,
   WifiOff,
-  ExternalLink,
-  Presentation as PresentationIcon
+  Play,
+  ExternalLink
 } from 'lucide-react';
 import './Dashboard.css';
 
-function Dashboard({ devices, presentations }) {
+function Dashboard({ devices }) {
   const [selectedDevices, setSelectedDevices] = useState([]);
-  const [selectedPresentation, setSelectedPresentation] = useState('');
+  const [castUrl, setCastUrl] = useState('');
+  const [volume, setVolume] = useState(50);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(null);
 
   const toggleDevice = (deviceId) => {
     setSelectedDevices(prev =>
@@ -33,44 +34,53 @@ function Dashboard({ devices, presentations }) {
     setSelectedDevices([]);
   };
 
-  const handleCastPresentation = async () => {
-    if (!selectedPresentation || selectedDevices.length === 0) {
-      setMessage({ type: 'error', text: 'Please select a presentation and at least one device' });
-      return;
-    }
+  const handleCast = async () => {
+    if (!castUrl || selectedDevices.length === 0) return;
 
     setLoading(true);
-    setMessage(null);
-
     try {
-      await presentationAPI.cast(selectedPresentation, selectedDevices);
-      setMessage({
-        type: 'success',
-        text: `Successfully cast presentation to ${selectedDevices.length} device(s)`
+      await axios.post('/api/cast', {
+        deviceIds: selectedDevices,
+        url: castUrl,
+        contentType: 'text/html'
       });
     } catch (error) {
-      setMessage({ type: 'error', text: `Failed to cast: ${error.message}` });
+      console.error('Cast failed:', error);
+      alert('Failed to cast content');
     } finally {
       setLoading(false);
     }
   };
 
   const handleStop = async () => {
-    if (selectedDevices.length === 0) {
-      setMessage({ type: 'error', text: 'Please select at least one device' });
-      return;
-    }
+    if (selectedDevices.length === 0) return;
 
     setLoading(true);
-    setMessage(null);
-
     try {
-      await deviceAPI.stop(selectedDevices);
-      setMessage({ type: 'success', text: 'Successfully stopped playback' });
+      await axios.post('/api/stop', {
+        deviceIds: selectedDevices
+      });
     } catch (error) {
-      setMessage({ type: 'error', text: `Failed to stop: ${error.message}` });
+      console.error('Stop failed:', error);
+      alert('Failed to stop devices');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVolumeChange = async (e) => {
+    const newVolume = parseInt(e.target.value);
+    setVolume(newVolume);
+
+    if (selectedDevices.length === 0) return;
+
+    try {
+      await axios.post('/api/volume', {
+        deviceIds: selectedDevices,
+        level: newVolume
+      });
+    } catch (error) {
+      console.error('Volume change failed:', error);
     }
   };
 
@@ -82,7 +92,7 @@ function Dashboard({ devices, presentations }) {
       <div className="page-header">
         <h1 className="page-title">Dashboard</h1>
         <p className="page-description">
-          Manage your Chromecast devices and cast presentations
+          Manage and control your Chromecast devices
         </p>
       </div>
 
@@ -120,16 +130,16 @@ function Dashboard({ devices, presentations }) {
 
         <div className="stat-card">
           <div className="stat-icon" style={{ background: 'rgba(255, 149, 0, 0.1)' }}>
-            <PresentationIcon size={24} color="var(--color-warning)" />
+            <Cast size={24} color="var(--color-warning)" />
           </div>
           <div className="stat-content">
-            <div className="stat-label">Presentations</div>
-            <div className="stat-value">{presentations.length}</div>
+            <div className="stat-label">Selected</div>
+            <div className="stat-value">{selectedDevices.length}</div>
           </div>
         </div>
       </div>
 
-      {/* Quick Cast Panel */}
+      {/* Control Panel */}
       <div className="control-panel card">
         <div className="card-header">
           <h3 className="card-title">Quick Cast</h3>
@@ -145,40 +155,27 @@ function Dashboard({ devices, presentations }) {
 
         <div className="control-content">
           <div className="input-group">
-            <label>Select Presentation</label>
-            <select
-              value={selectedPresentation}
-              onChange={(e) => setSelectedPresentation(e.target.value)}
-              disabled={presentations.length === 0}
-            >
-              <option value="">-- Select a presentation --</option>
-              {presentations.map((presentation) => (
-                <option key={presentation.id} value={presentation.id}>
-                  {presentation.name} ({presentation.slides?.length || 0} slides)
-                </option>
-              ))}
-            </select>
-            {presentations.length === 0 && (
-              <small style={{ color: 'var(--color-text-tertiary)' }}>
-                No presentations available. Create one in the Presentations page.
-              </small>
-            )}
-          </div>
-
-          {message && (
-            <div className={`message message-${message.type}`}>
-              {message.text}
+            <label>URL to Cast</label>
+            <div className="url-input-wrapper">
+              <input
+                type="url"
+                placeholder="https://example.com"
+                value={castUrl}
+                onChange={(e) => setCastUrl(e.target.value)}
+                className="url-input"
+              />
+              <ExternalLink size={18} className="url-icon" />
             </div>
-          )}
+          </div>
 
           <div className="control-actions">
             <button
               className="btn btn-primary btn-lg"
-              onClick={handleCastPresentation}
-              disabled={loading || !selectedPresentation || selectedDevices.length === 0}
+              onClick={handleCast}
+              disabled={loading || !castUrl || selectedDevices.length === 0}
             >
-              <Play size={18} />
-              {loading ? 'Casting...' : `Cast to ${selectedDevices.length} ${selectedDevices.length === 1 ? 'Device' : 'Devices'}`}
+              <Cast size={18} />
+              Cast to {selectedDevices.length} {selectedDevices.length === 1 ? 'Device' : 'Devices'}
             </button>
 
             <button
@@ -190,12 +187,28 @@ function Dashboard({ devices, presentations }) {
               Stop
             </button>
           </div>
+
+          <div className="volume-control">
+            <div className="volume-header">
+              <Volume2 size={18} />
+              <span>Volume: {volume}%</span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={volume}
+              onChange={handleVolumeChange}
+              className="volume-slider"
+              disabled={selectedDevices.length === 0}
+            />
+          </div>
         </div>
       </div>
 
       {/* Devices Grid */}
       <div className="devices-section">
-        <h3>Chromecast Devices</h3>
+        <h3>Devices</h3>
 
         {devices.length === 0 ? (
           <div className="empty-state card">
@@ -204,7 +217,7 @@ function Dashboard({ devices, presentations }) {
             </div>
             <h4 className="empty-state-title">No Devices Found</h4>
             <p className="empty-state-description">
-              Make sure your Chromecasts are on the same network.
+              Make sure your Chromecasts are on the same network and discoverable.
             </p>
           </div>
         ) : (

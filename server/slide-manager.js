@@ -725,8 +725,8 @@ class SlideManager {
    * Render image slide
    */
   renderImageSlide(slide, brandingHtml) {
-    const isSlidesh ow = Array.isArray(slide.config.urls);
-    const imageSrc = isSlidesh ? slide.config.urls[0] : slide.config.url;
+    const isSlideshow = Array.isArray(slide.config.urls);
+    const imageSrc = isSlideshow ? slide.config.urls[0] : slide.config.url;
 
     return `<!DOCTYPE html>
 <html>
@@ -762,7 +762,7 @@ class SlideManager {
   </div>
   ${brandingHtml}
 
-  ${isSlidesh ? `
+  ${isSlideshow ? `
   <script>
     const images = ${JSON.stringify(slide.config.urls)};
     let currentIndex = 0;
