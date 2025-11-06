@@ -11,6 +11,113 @@ class PresentationManager {
     this.slideManager = slideManager;
     this.presentations = new Map();
     this.activePresentations = new Map(); // deviceId -> presentationId
+    this.sampleContentInitialized = false;
+  }
+
+  /**
+   * Initialize sample content (presentations) on first launch
+   */
+  initializeSampleContent() {
+    // Only initialize if no presentations exist
+    if (this.presentations.size > 0 || this.sampleContentInitialized) {
+      return;
+    }
+
+    logger.info('Initializing sample presentations...');
+
+    try {
+      // Get all slides to find sample slides by name
+      const allSlides = this.slideManager.getAllSlides();
+      const sampleSlides = {};
+
+      allSlides.forEach(slide => {
+        if (slide.name.startsWith('Sample ')) {
+          const key = slide.name.replace('Sample ', '').split(' - ')[0].toLowerCase();
+          sampleSlides[key] = slide.id;
+        }
+      });
+
+      // Sample Presentation 1: Welcome & Info
+      if (sampleSlides.welcome && sampleSlides.clock) {
+        this.createPresentation({
+          name: 'Sample: Welcome & Info',
+          description: 'A simple presentation with welcome message and clock',
+          slides: [
+            { slideId: sampleSlides.welcome, duration: 10 },
+            { slideId: sampleSlides.clock, duration: 15 }
+          ],
+          branding: {
+            enabled: true,
+            text: 'Powered by Narrowcast Pro',
+            position: 'bottom-right',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            textColor: '#ffffff',
+            logo: ''
+          },
+          settings: {
+            transition: 'fade',
+            transitionDuration: 500,
+            loop: true
+          }
+        });
+      }
+
+      // Sample Presentation 2: Full Demo
+      if (sampleSlides.welcome && sampleSlides.clock && sampleSlides.weather) {
+        this.createPresentation({
+          name: 'Sample: Full Demo',
+          description: 'Complete demo presentation with all sample slides',
+          slides: [
+            { slideId: sampleSlides.welcome, duration: 10 },
+            { slideId: sampleSlides.weather, duration: 20 },
+            { slideId: sampleSlides.clock, duration: 15 }
+          ],
+          branding: {
+            enabled: true,
+            text: 'Narrowcast Pro Demo',
+            position: 'bottom-right',
+            backgroundColor: 'rgba(102, 126, 234, 0.8)',
+            textColor: '#ffffff',
+            logo: ''
+          },
+          settings: {
+            transition: 'slide',
+            transitionDuration: 800,
+            loop: true
+          }
+        });
+      }
+
+      // Sample Presentation 3: News & Weather (if news slide exists)
+      if (sampleSlides.news && sampleSlides.weather) {
+        this.createPresentation({
+          name: 'Sample: News & Weather',
+          description: 'Information display with news and weather updates',
+          slides: [
+            { slideId: sampleSlides.news, duration: 30 },
+            { slideId: sampleSlides.weather, duration: 20 }
+          ],
+          branding: {
+            enabled: true,
+            text: 'Live Updates',
+            position: 'top-right',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            textColor: '#ffffff',
+            logo: ''
+          },
+          settings: {
+            transition: 'fade',
+            transitionDuration: 500,
+            loop: true
+          }
+        });
+      }
+
+      this.sampleContentInitialized = true;
+      logger.info(`✓ Created ${this.presentations.size} sample presentations`);
+    } catch (error) {
+      logger.error('Failed to initialize sample presentations:', error);
+    }
   }
 
   /**

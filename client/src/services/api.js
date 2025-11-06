@@ -320,6 +320,18 @@ export const setupAPI = {
   getInstructions: () => axiosInstance.get('/setup/instructions').then(res => res.data),
 
   /**
+   * Get receiver options (free and custom)
+   * @returns {Promise<Object>} Receiver options with features and limitations
+   */
+  getReceiverOptions: () => axiosInstance.get('/setup/receiver-options').then(res => res.data),
+
+  /**
+   * Use free public receiver (no registration required)
+   * @returns {Promise<Object>} Configuration result
+   */
+  useFreeReceiver: () => axiosInstance.post('/setup/use-free-receiver').then(res => res.data),
+
+  /**
    * Save Chromecast APP_ID
    * @param {string} appId - The 8-character APP_ID from Google Cast Console
    * @returns {Promise<Object>} Save result

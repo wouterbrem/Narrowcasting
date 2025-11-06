@@ -20,6 +20,79 @@ const logger = require('./logger');
 class SlideManager {
   constructor() {
     this.slides = new Map();
+    this.sampleContentInitialized = false;
+  }
+
+  /**
+   * Initialize sample content (slides) on first launch
+   */
+  initializeSampleContent() {
+    // Only initialize if no slides exist
+    if (this.slides.size > 0 || this.sampleContentInitialized) {
+      return;
+    }
+
+    logger.info('Initializing sample slides...');
+
+    try {
+      // Sample 1: Clock Slide
+      this.createSlide({
+        type: 'clock',
+        name: 'Sample Clock',
+        duration: 15,
+        config: {
+          format: '24h',
+          showSeconds: true,
+          showDate: true,
+          timezone: 'auto'
+        }
+      });
+
+      // Sample 2: Weather Slide
+      this.createSlide({
+        type: 'weather',
+        name: 'Sample Weather - Amsterdam',
+        duration: 20,
+        config: {
+          location: 'Amsterdam, NL',
+          units: 'metric',
+          showForecast: true
+        }
+      });
+
+      // Sample 3: Custom HTML - Welcome Message
+      this.createSlide({
+        type: 'html',
+        name: 'Sample Welcome Message',
+        duration: 10,
+        config: {
+          html: `
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 40px;">
+              <h1 style="font-size: 72px; font-weight: 300; margin: 0 0 20px 0; text-shadow: 0 2px 20px rgba(0,0,0,0.3);">Welcome to Narrowcast Pro</h1>
+              <p style="font-size: 32px; opacity: 0.9; margin: 0;">Your Professional Narrowcasting Solution</p>
+              <p style="font-size: 24px; opacity: 0.7; margin: 40px 0 0 0;">This is a sample slide - Create your own!</p>
+            </div>
+          `
+        }
+      });
+
+      // Sample 4: Web Page - News
+      this.createSlide({
+        type: 'webpage',
+        name: 'Sample News - BBC',
+        duration: 30,
+        config: {
+          url: 'https://www.bbc.com/news',
+          handleCookies: true,
+          zoom: 1.0
+        }
+      });
+
+      this.sampleContentInitialized = true;
+      logger.info(`✓ Created ${this.slides.size} sample slides`);
+    } catch (error) {
+      logger.error('Failed to initialize sample content:', error);
+    }
   }
 
   /**

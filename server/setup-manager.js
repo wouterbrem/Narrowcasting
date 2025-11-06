@@ -197,6 +197,68 @@ class SetupManager {
   }
 
   /**
+   * Get receiver options (free public receiver and custom receiver)
+   */
+  getReceiverOptions() {
+    return {
+      freeReceiver: {
+        appId: '5CB45E5A',
+        name: 'Free Public Receiver',
+        description: 'Use the free public Chromecast receiver - no registration required',
+        recommended: true,
+        cost: 'Free',
+        features: [
+          'No registration required',
+          'No $5 fee',
+          'Works immediately',
+          'Supports HTML presentations',
+          'Shared with other users'
+        ],
+        limitations: [
+          'Cannot customize receiver appearance',
+          'Shared receiver app with other users'
+        ]
+      },
+      customReceiver: {
+        appId: null,
+        name: 'Custom Receiver',
+        description: 'Register your own Chromecast receiver app for full customization',
+        recommended: false,
+        cost: '$5 one-time fee',
+        features: [
+          'Fully customizable appearance',
+          'Private receiver app',
+          'Custom branding',
+          'Full control over receiver code'
+        ],
+        limitations: [
+          '$5 one-time registration fee with Google',
+          'Requires Google Developer account',
+          'Manual registration process'
+        ]
+      }
+    };
+  }
+
+  /**
+   * Use the free public receiver (no registration required)
+   */
+  useFreeReceiver() {
+    logger.info('Configuring free public receiver...');
+
+    const result = this.writeEnvFile({
+      CHROMECAST_APP_ID: '5CB45E5A'
+    });
+
+    if (result.success) {
+      logger.info('✓ Free receiver configured successfully');
+      logger.info('✓ APP_ID: 5CB45E5A (Free Public Receiver)');
+    }
+
+    return result;
+  }
+
+  /**
    * Save Chromecast APP_ID to .env
    */
   saveAppId(appId) {

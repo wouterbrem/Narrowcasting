@@ -846,6 +846,46 @@ app.get('/api/setup/instructions', (req, res) => {
   }
 });
 
+// Get receiver options (free and custom)
+app.get('/api/setup/receiver-options', (req, res) => {
+  try {
+    const options = setupManager.getReceiverOptions();
+    res.json(options);
+  } catch (error) {
+    logger.error('Receiver options error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Use free public receiver (no registration required)
+app.post('/api/setup/use-free-receiver', (req, res) => {
+  try {
+    const result = setupManager.useFreeReceiver();
+
+    if (result.success) {
+      logger.activity('FREE_RECEIVER_CONFIGURED');
+
+      // Broadcast update to WebSocket clients
+      broadcastToClients({
+        type: 'setupStatus',
+        setupStatus: setupManager.getSetupStatus()
+      });
+
+      res.json({
+        success: true,
+        message: 'Free receiver configured successfully',
+        appId: '5CB45E5A',
+        requiresRestart: true
+      });
+    } else {
+      res.status(500).json(result);
+    }
+  } catch (error) {
+    logger.error('Free receiver configuration error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Save Chromecast APP_ID
 app.post('/api/setup/app-id', (req, res) => {
   try {
@@ -967,6 +1007,11 @@ server.listen(PORT, async () => {
     logger.info(`✓ Chromecast APP_ID configured: ${setupStatus.appId}`);
     logger.info('✓ Custom receiver enabled - HTML presentations will work');
   }
+
+  // Initialize sample content on first launch
+  logger.info('Checking for sample content...');
+  slideManager.initializeSampleContent();
+  presentationManager.initializeSampleContent();
 
   logger.info('Starting Chromecast discovery...');
   logger.activity('SERVER_STARTED', {

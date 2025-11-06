@@ -21,6 +21,7 @@ function Setup() {
   const [setupStatus, setSetupStatus] = useState(null);
   const [serverInfo, setServerInfo] = useState(null);
   const [instructions, setInstructions] = useState(null);
+  const [receiverOptions, setReceiverOptions] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
   const [appId, setAppId] = useState('');
   const [appIdError, setAppIdError] = useState('');
@@ -28,6 +29,7 @@ function Setup() {
   const [testing, setTesting] = useState(false);
   const [receiverTest, setReceiverTest] = useState(null);
   const [copyFeedback, setCopyFeedback] = useState('');
+  const [usingFreeReceiver, setUsingFreeReceiver] = useState(false);
 
   // Load initial data
   useEffect(() => {
@@ -37,15 +39,17 @@ function Setup() {
   const loadSetupData = async () => {
     setLoading(true);
     try {
-      const [statusData, serverData, instructionsData] = await Promise.all([
+      const [statusData, serverData, instructionsData, optionsData] = await Promise.all([
         setupAPI.getStatus(),
         setupAPI.getServerInfo(),
-        setupAPI.getInstructions()
+        setupAPI.getInstructions(),
+        setupAPI.getReceiverOptions()
       ]);
 
       setSetupStatus(statusData);
       setServerInfo(serverData);
       setInstructions(instructionsData);
+      setReceiverOptions(optionsData);
 
       // Set APP_ID if already configured
       if (statusData.appId) {
@@ -65,6 +69,27 @@ function Setup() {
       setTimeout(() => setCopyFeedback(''), 2000);
     } catch (error) {
       console.error('Failed to copy:', error);
+    }
+  };
+
+  const handleUseFreeReceiver = async () => {
+    setUsingFreeReceiver(true);
+    setAppIdError('');
+
+    try {
+      const result = await setupAPI.useFreeReceiver();
+
+      if (result.success) {
+        // Reload setup status
+        await loadSetupData();
+        alert('✓ Free receiver configured successfully!\n\nPlease restart the server for changes to take effect.');
+      } else {
+        setAppIdError(result.error || 'Failed to configure free receiver');
+      }
+    } catch (error) {
+      setAppIdError(error.message || 'Failed to configure free receiver');
+    } finally {
+      setUsingFreeReceiver(false);
     }
   };
 
@@ -292,12 +317,117 @@ function Setup() {
         )}
       </div>
 
+      {/* Receiver Options */}
+      {receiverOptions && !setupStatus?.appIdConfigured && (
+        <div className="setup-section">
+          <div className="section-header">
+            <Shield size={24} />
+            <h2>Choose Your Receiver Option</h2>
+          </div>
+
+          <div className="receiver-options-grid">
+            {/* Free Receiver Option */}
+            <div className="receiver-option recommended">
+              <div className="option-badge recommended-badge">
+                <CheckCircle size={16} />
+                <span>Recommended</span>
+              </div>
+
+              <h3>{receiverOptions.freeReceiver.name}</h3>
+              <p className="option-description">{receiverOptions.freeReceiver.description}</p>
+
+              <div className="option-cost free">
+                <strong>{receiverOptions.freeReceiver.cost}</strong>
+              </div>
+
+              <div className="option-features">
+                <h4>Features:</h4>
+                <ul>
+                  {receiverOptions.freeReceiver.features.map((feature, index) => (
+                    <li key={index}>
+                      <CheckCircle size={14} />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="option-limitations">
+                <h4>Limitations:</h4>
+                <ul>
+                  {receiverOptions.freeReceiver.limitations.map((limitation, index) => (
+                    <li key={index}>
+                      <AlertCircle size={14} />
+                      <span>{limitation}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <button
+                className="action-btn primary large"
+                onClick={handleUseFreeReceiver}
+                disabled={usingFreeReceiver}
+              >
+                {usingFreeReceiver ? <Loader className="spin" size={16} /> : <CheckCircle size={16} />}
+                <span>{usingFreeReceiver ? 'Configuring...' : 'Use Free Receiver'}</span>
+              </button>
+            </div>
+
+            {/* Custom Receiver Option */}
+            <div className="receiver-option">
+              <h3>{receiverOptions.customReceiver.name}</h3>
+              <p className="option-description">{receiverOptions.customReceiver.description}</p>
+
+              <div className="option-cost paid">
+                <strong>{receiverOptions.customReceiver.cost}</strong>
+              </div>
+
+              <div className="option-features">
+                <h4>Features:</h4>
+                <ul>
+                  {receiverOptions.customReceiver.features.map((feature, index) => (
+                    <li key={index}>
+                      <CheckCircle size={14} />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="option-limitations">
+                <h4>Limitations:</h4>
+                <ul>
+                  {receiverOptions.customReceiver.limitations.map((limitation, index) => (
+                    <li key={index}>
+                      <AlertCircle size={14} />
+                      <span>{limitation}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <p className="option-note">
+                See registration instructions below to set up a custom receiver
+              </p>
+            </div>
+          </div>
+
+          {appIdError && (
+            <div className="error-message">
+              <XCircle size={16} />
+              <span>{appIdError}</span>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Registration Instructions */}
       {instructions && (
         <div className="setup-section">
           <div className="section-header">
             <Globe size={24} />
-            <h2>Google Cast Registration</h2>
+            <h2>Custom Receiver Registration (Optional)</h2>
           </div>
 
           <div className="registration-info">
