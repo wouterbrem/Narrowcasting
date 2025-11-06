@@ -50,9 +50,13 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 // Serve Chromecast receiver and other public assets
 app.use('/receiver', express.static(path.join(__dirname, 'public')));
 
-// Serve static files from React app in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
+// Serve static files from React app (check if build folder exists)
+const buildPath = path.join(__dirname, '../client/build');
+if (fs.existsSync(buildPath)) {
+  app.use(express.static(buildPath));
+  logger.info('Serving React app from build folder');
+} else {
+  logger.warn('React build folder not found - run "npm run build" in client directory');
 }
 
 // Configure multer for file uploads
@@ -971,8 +975,8 @@ app.post('/api/setup/env', (req, res) => {
   }
 });
 
-// Serve React app for all other routes in production
-if (process.env.NODE_ENV === 'production') {
+// Serve React app for all other routes (if build exists)
+if (fs.existsSync(buildPath)) {
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
   });
