@@ -8,7 +8,7 @@ import axios from 'axios';
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 // Create axios instance with defaults
-const api = axios.create({
+const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -17,7 +17,7 @@ const api = axios.create({
 });
 
 // Response interceptor for error handling
-api.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     const message = error.response?.data?.error || error.message || 'An error occurred';
@@ -34,14 +34,14 @@ export const deviceAPI = {
    * Get all discovered Chromecast devices
    * @returns {Promise<Array>} List of devices
    */
-  getAll: () => api.get('/devices').then(res => res.data),
+  getAll: () => axiosInstance.get('/devices').then(res => res.data),
 
   /**
    * Stop playback on devices
    * @param {string[]} deviceIds - Array of device IDs
    * @returns {Promise<Object>} Result
    */
-  stop: (deviceIds) => api.post('/devices/stop', { deviceIds }).then(res => res.data),
+  stop: (deviceIds) => axiosInstance.post('/devices/stop', { deviceIds }).then(res => res.data),
 
   /**
    * Set volume on devices
@@ -50,7 +50,7 @@ export const deviceAPI = {
    * @returns {Promise<Object>} Result
    */
   setVolume: (deviceIds, level) =>
-    api.post('/devices/volume', { deviceIds, level }).then(res => res.data),
+    axiosInstance.post('/devices/volume', { deviceIds, level }).then(res => res.data),
 };
 
 /**
@@ -64,7 +64,7 @@ export const slideAPI = {
    */
   getAll: (type = null) => {
     const params = type ? { type } : {};
-    return api.get('/slides', { params }).then(res => res.data);
+    return axiosInstance.get('/slides', { params }).then(res => res.data);
   },
 
   /**
@@ -72,7 +72,7 @@ export const slideAPI = {
    * @param {string} id - Slide ID
    * @returns {Promise<Object>} Slide object
    */
-  getById: (id) => api.get(`/slides/${id}`).then(res => res.data),
+  getById: (id) => axiosInstance.get(`/slides/${id}`).then(res => res.data),
 
   /**
    * Create a new slide
@@ -83,7 +83,7 @@ export const slideAPI = {
    * @param {Object} data.config - Type-specific configuration
    * @returns {Promise<Object>} Created slide
    */
-  create: (data) => api.post('/slides', data).then(res => res.data.slide),
+  create: (data) => axiosInstance.post('/slides', data).then(res => res.data.slide),
 
   /**
    * Update a slide
@@ -91,14 +91,14 @@ export const slideAPI = {
    * @param {Object} updates - Fields to update
    * @returns {Promise<Object>} Updated slide
    */
-  update: (id, updates) => api.put(`/slides/${id}`, updates).then(res => res.data.slide),
+  update: (id, updates) => axiosInstance.put(`/slides/${id}`, updates).then(res => res.data.slide),
 
   /**
    * Delete a slide
    * @param {string} id - Slide ID
    * @returns {Promise<Object>} Result
    */
-  delete: (id) => api.delete(`/slides/${id}`).then(res => res.data),
+  delete: (id) => axiosInstance.delete(`/slides/${id}`).then(res => res.data),
 
   /**
    * Get preview URL for a slide
@@ -123,7 +123,7 @@ export const presentationAPI = {
    */
   getAll: (withSlides = false) => {
     const params = withSlides ? { withSlides: 'true' } : {};
-    return api.get('/presentations', { params }).then(res => res.data);
+    return axiosInstance.get('/presentations', { params }).then(res => res.data);
   },
 
   /**
@@ -134,7 +134,7 @@ export const presentationAPI = {
    */
   getById: (id, withSlides = false) => {
     const params = withSlides ? { withSlides: 'true' } : {};
-    return api.get(`/presentations/${id}`, { params }).then(res => res.data);
+    return axiosInstance.get(`/presentations/${id}`, { params }).then(res => res.data);
   },
 
   /**
@@ -147,7 +147,7 @@ export const presentationAPI = {
    * @param {Object} [data.settings] - Presentation settings
    * @returns {Promise<Object>} Created presentation
    */
-  create: (data) => api.post('/presentations', data).then(res => res.data.presentation),
+  create: (data) => axiosInstance.post('/presentations', data).then(res => res.data.presentation),
 
   /**
    * Update a presentation
@@ -155,14 +155,14 @@ export const presentationAPI = {
    * @param {Object} updates - Fields to update
    * @returns {Promise<Object>} Updated presentation
    */
-  update: (id, updates) => api.put(`/presentations/${id}`, updates).then(res => res.data.presentation),
+  update: (id, updates) => axiosInstance.put(`/presentations/${id}`, updates).then(res => res.data.presentation),
 
   /**
    * Delete a presentation
    * @param {string} id - Presentation ID
    * @returns {Promise<Object>} Result
    */
-  delete: (id) => api.delete(`/presentations/${id}`).then(res => res.data),
+  delete: (id) => axiosInstance.delete(`/presentations/${id}`).then(res => res.data),
 
   /**
    * Cast presentation to devices
@@ -171,7 +171,7 @@ export const presentationAPI = {
    * @returns {Promise<Object>} Result with player URL
    */
   cast: (id, deviceIds) =>
-    api.post(`/presentations/${id}/cast`, { deviceIds }).then(res => res.data),
+    axiosInstance.post(`/presentations/${id}/cast`, { deviceIds }).then(res => res.data),
 
   /**
    * Stop presentation on devices
@@ -179,7 +179,7 @@ export const presentationAPI = {
    * @returns {Promise<Object>} Result
    */
   stop: (deviceIds) =>
-    api.post('/presentations/stop', { deviceIds }).then(res => res.data),
+    axiosInstance.post('/presentations/stop', { deviceIds }).then(res => res.data),
 
   /**
    * Get player URL for a presentation
@@ -192,7 +192,7 @@ export const presentationAPI = {
    * Get presentation statistics
    * @returns {Promise<Object>} Statistics
    */
-  getStatistics: () => api.get('/presentations/statistics').then(res => res.data),
+  getStatistics: () => axiosInstance.get('/presentations/statistics').then(res => res.data),
 };
 
 /**
@@ -203,7 +203,7 @@ export const groupAPI = {
    * Get all device groups
    * @returns {Promise<Array>} List of groups
    */
-  getAll: () => api.get('/groups').then(res => res.data),
+  getAll: () => axiosInstance.get('/groups').then(res => res.data),
 
   /**
    * Create a new group
@@ -212,14 +212,14 @@ export const groupAPI = {
    * @returns {Promise<Object>} Created group
    */
   create: (name, deviceIds) =>
-    api.post('/groups', { name, deviceIds }).then(res => res.data.group),
+    axiosInstance.post('/groups', { name, deviceIds }).then(res => res.data.group),
 
   /**
    * Delete a group
    * @param {string} id - Group ID
    * @returns {Promise<Object>} Result
    */
-  delete: (id) => api.delete(`/groups/${id}`).then(res => res.data),
+  delete: (id) => axiosInstance.delete(`/groups/${id}`).then(res => res.data),
 };
 
 /**
@@ -230,14 +230,14 @@ export const brandingAPI = {
    * Get branding configuration
    * @returns {Promise<Object>} Branding configuration
    */
-  get: () => api.get('/branding').then(res => res.data),
+  get: () => axiosInstance.get('/branding').then(res => res.data),
 
   /**
    * Update branding configuration
    * @param {Object} updates - Branding updates
    * @returns {Promise<Object>} Updated branding
    */
-  update: (updates) => api.put('/branding', updates).then(res => res.data.branding),
+  update: (updates) => axiosInstance.put('/branding', updates).then(res => res.data.branding),
 
   /**
    * Upload branding logo
@@ -247,7 +247,7 @@ export const brandingAPI = {
   uploadLogo: (file) => {
     const formData = new FormData();
     formData.append('logo', file);
-    return api.post('/branding/logo', formData, {
+    return axiosInstance.post('/branding/logo', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     }).then(res => res.data.logoUrl);
   },
@@ -256,13 +256,13 @@ export const brandingAPI = {
    * Delete branding logo
    * @returns {Promise<Object>} Result
    */
-  deleteLogo: () => api.delete('/branding/logo').then(res => res.data),
+  deleteLogo: () => axiosInstance.delete('/branding/logo').then(res => res.data),
 
   /**
    * Reset branding to default
    * @returns {Promise<Object>} Default branding
    */
-  reset: () => api.post('/branding/reset').then(res => res.data.branding),
+  reset: () => axiosInstance.post('/branding/reset').then(res => res.data.branding),
 };
 
 /**
@@ -273,13 +273,13 @@ export const systemAPI = {
    * Get system health
    * @returns {Promise<Object>} Health status
    */
-  getHealth: () => api.get('/health').then(res => res.data),
+  getHealth: () => axiosInstance.get('/health').then(res => res.data),
 
   /**
    * Get system statistics
    * @returns {Promise<Object>} Statistics
    */
-  getStatistics: () => api.get('/statistics').then(res => res.data),
+  getStatistics: () => axiosInstance.get('/statistics').then(res => res.data),
 
   /**
    * Get system logs
@@ -288,7 +288,7 @@ export const systemAPI = {
    * @returns {Promise<Object>} Logs data
    */
   getLogs: (type = 'combined', lines = 100) =>
-    api.get('/logs', { params: { type, lines } }).then(res => res.data),
+    axiosInstance.get('/logs', { params: { type, lines } }).then(res => res.data),
 };
 
 /**
@@ -299,52 +299,52 @@ export const setupAPI = {
    * Get comprehensive setup status check
    * @returns {Promise<Object>} Setup check results
    */
-  check: () => api.get('/setup/check').then(res => res.data),
+  check: () => axiosInstance.get('/setup/check').then(res => res.data),
 
   /**
    * Get server network information
    * @returns {Promise<Object>} Server info including IP and receiver URL
    */
-  getServerInfo: () => api.get('/setup/server-info').then(res => res.data),
+  getServerInfo: () => axiosInstance.get('/setup/server-info').then(res => res.data),
 
   /**
    * Get current setup status
    * @returns {Promise<Object>} Setup status
    */
-  getStatus: () => api.get('/setup/status').then(res => res.data),
+  getStatus: () => axiosInstance.get('/setup/status').then(res => res.data),
 
   /**
    * Get registration instructions
    * @returns {Promise<Object>} Step-by-step instructions
    */
-  getInstructions: () => api.get('/setup/instructions').then(res => res.data),
+  getInstructions: () => axiosInstance.get('/setup/instructions').then(res => res.data),
 
   /**
    * Save Chromecast APP_ID
    * @param {string} appId - The 8-character APP_ID from Google Cast Console
    * @returns {Promise<Object>} Save result
    */
-  saveAppId: (appId) => api.post('/setup/app-id', { appId }).then(res => res.data),
+  saveAppId: (appId) => axiosInstance.post('/setup/app-id', { appId }).then(res => res.data),
 
   /**
    * Test receiver URL accessibility
    * @param {string} url - Receiver URL to test
    * @returns {Promise<Object>} Test result
    */
-  testReceiver: (url) => api.post('/setup/test-receiver', { url }).then(res => res.data),
+  testReceiver: (url) => axiosInstance.post('/setup/test-receiver', { url }).then(res => res.data),
 
   /**
    * Get current .env file content
    * @returns {Promise<Object>} ENV file data
    */
-  getEnv: () => api.get('/setup/env').then(res => res.data),
+  getEnv: () => axiosInstance.get('/setup/env').then(res => res.data),
 
   /**
    * Update .env file
    * @param {Object} updates - Key-value pairs to update
    * @returns {Promise<Object>} Update result
    */
-  updateEnv: (updates) => api.post('/setup/env', { updates }).then(res => res.data),
+  updateEnv: (updates) => axiosInstance.post('/setup/env', { updates }).then(res => res.data),
 };
 
 /**
