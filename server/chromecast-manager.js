@@ -5,6 +5,9 @@ const DefaultMediaReceiver = require('castv2-client').DefaultMediaReceiver;
 const { v4: uuidv4 } = require('uuid');
 const logger = require('./logger');
 
+// Custom namespace for Narrowcast Pro receiver
+const CUSTOM_NAMESPACE = 'urn:x-cast:com.narrowcastpro.presentation';
+
 class ChromecastManager extends EventEmitter {
   constructor() {
     super();
@@ -14,6 +17,20 @@ class ChromecastManager extends EventEmitter {
     this.playlists = new Map();
     this.playlistTimers = new Map();
     this.browser = null;
+
+    // Custom receiver configuration
+    // If CHROMECAST_APP_ID is set, use custom receiver
+    // Otherwise fall back to DefaultMediaReceiver (which only supports media files)
+    this.customAppId = process.env.CHROMECAST_APP_ID || null;
+    this.useCustomReceiver = !!this.customAppId;
+
+    if (this.useCustomReceiver) {
+      logger.info(`Using custom Chromecast receiver with APP_ID: ${this.customAppId}`);
+    } else {
+      logger.info('Using DefaultMediaReceiver (only supports media files, not HTML)');
+      logger.warn('⚠️  HTML presentations will NOT work with DefaultMediaReceiver');
+      logger.warn('⚠️  Set CHROMECAST_APP_ID environment variable to use custom receiver');
+    }
   }
 
   startDiscovery() {
@@ -144,35 +161,19 @@ class ChromecastManager extends EventEmitter {
 
     for (const deviceId of deviceIds) {
       try {
-        const client = await this.getClient(deviceId);
+        if (this.useCustomReceiver) {
+          // Use custom receiver for HTML presentations
+          await this.castToCustomReceiver(deviceId, url);
+        } else {
+          // Fall back to DefaultMediaReceiver (only works for media files)
+          await this.castToDefaultReceiver(deviceId, url, contentType);
+        }
 
-        await new Promise((resolve, reject) => {
-          client.launch(DefaultMediaReceiver, (err, player) => {
-            if (err) {
-              reject(err);
-              return;
-            }
-
-            const media = {
-              contentId: url,
-              contentType: contentType,
-              streamType: 'LIVE'
-            };
-
-            player.load(media, { autoplay: true }, (err, status) => {
-              if (err) {
-                reject(err);
-              } else {
-                const device = this.devices.get(deviceId);
-                device.status = 'playing';
-                device.currentUrl = url;
-                this.emit('deviceStatus', deviceId, device.status);
-                results.push({ deviceId, success: true });
-                resolve();
-              }
-            });
-          });
-        });
+        const device = this.devices.get(deviceId);
+        device.status = 'playing';
+        device.currentUrl = url;
+        this.emit('deviceStatus', deviceId, device.status);
+        results.push({ deviceId, success: true });
       } catch (error) {
         logger.error(`Failed to cast to ${deviceId}:`, error);
         results.push({ deviceId, success: false, error: error.message });
@@ -180,6 +181,92 @@ class ChromecastManager extends EventEmitter {
     }
 
     return results;
+  }
+
+  /**
+   * Cast to custom receiver (supports HTML presentations)
+   */
+  async castToCustomReceiver(deviceId, url) {
+    const client = await this.getClient(deviceId);
+
+    return new Promise((resolve, reject) => {
+      logger.info(`Launching custom receiver for ${deviceId}...`);
+
+      client.launch(this.customAppId, (err, player) => {
+        if (err) {
+          logger.error(`Failed to launch custom receiver: ${err.message}`);
+          reject(err);
+          return;
+        }
+
+        logger.info(`Custom receiver launched for ${deviceId}`);
+
+        // Create connection to custom namespace
+        const connection = client.createChannel(
+          player.session.transportId,
+          player.session.sessionId,
+          CUSTOM_NAMESPACE,
+          'JSON'
+        );
+
+        // Send load presentation message
+        const message = {
+          type: 'LOAD_PRESENTATION',
+          url: url,
+          timestamp: Date.now()
+        };
+
+        logger.info(`Sending LOAD_PRESENTATION to ${deviceId}:`, message);
+
+        connection.send(message);
+
+        // Wait a bit for receiver to process message
+        setTimeout(() => {
+          logger.info(`Presentation load initiated for ${deviceId}`);
+          resolve();
+        }, 1000);
+
+        // Listen for errors
+        connection.on('error', (error) => {
+          logger.error(`Custom receiver connection error for ${deviceId}:`, error);
+        });
+      });
+    });
+  }
+
+  /**
+   * Cast to DefaultMediaReceiver (only supports media files: video, audio, images)
+   */
+  async castToDefaultReceiver(deviceId, url, contentType) {
+    const client = await this.getClient(deviceId);
+
+    return new Promise((resolve, reject) => {
+      logger.info(`Launching DefaultMediaReceiver for ${deviceId}...`);
+
+      client.launch(DefaultMediaReceiver, (err, player) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        const media = {
+          contentId: url,
+          contentType: contentType,
+          streamType: 'LIVE'
+        };
+
+        logger.info(`Loading media on ${deviceId}:`, media);
+
+        player.load(media, { autoplay: true }, (err, status) => {
+          if (err) {
+            reject(err);
+          } else {
+            logger.info(`Media loaded on ${deviceId}`);
+            resolve();
+          }
+        });
+      });
+    });
   }
 
   async stopDevices(deviceIds) {

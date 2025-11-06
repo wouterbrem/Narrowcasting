@@ -134,6 +134,27 @@ npm run dist:win    # Windows: Creates Setup.exe and Portable.exe
 **📖 See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for detailed build guide!**
 **📖 See [DISTRIBUTION.md](DISTRIBUTION.md) for release management and GitHub Actions setup!**
 
+---
+
+## ⚠️ Important: Chromecast HTML Casting Setup
+
+**HTML presentations require a custom Chromecast receiver to be registered.**
+
+By default, Chromecast only supports casting **media files** (video, audio, images). To cast **HTML presentations** (which is what Narrowcast Pro uses for slides), you need to:
+
+1. Register a free custom receiver with Google Cast ($5 one-time fee)
+2. Configure Narrowcast Pro with your receiver APP_ID
+
+**Without this setup:**
+- ❌ HTML presentations will NOT display on Chromecast
+- ✅ Media files (video, audio, images) will still work
+
+**Setup takes 15-30 minutes and is required only once.**
+
+**📖 See [CHROMECAST_SETUP.md](CHROMECAST_SETUP.md) for complete step-by-step instructions!**
+
+---
+
 ## 🚀 Quick Start Guide
 
 ### 1. Launch the App

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Narrowcast Pro Receiver</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #splash {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      z-index: 1000;
+      transition: opacity 0.5s ease-out;
+    }
+
+    #splash.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #splash h1 {
+      font-size: 72px;
+      font-weight: 300;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    #splash p {
+      font-size: 32px;
+      opacity: 0.9;
+    }
+
+    #splash .status {
+      margin-top: 40px;
+      font-size: 24px;
+      opacity: 0.7;
+    }
+
+    #content-frame {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #000;
+      display: none;
+    }
+
+    #content-frame.visible {
+      display: block;
+    }
+
+    #error {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #ee4444 0%, #aa2222 100%);
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 40px;
+      text-align: center;
+    }
+
+    #error.visible {
+      display: flex;
+    }
+
+    #error h2 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    #error p {
+      font-size: 24px;
+      opacity: 0.9;
+    }
+
+    .debug {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #0f0;
+      font-family: monospace;
+      font-size: 14px;
+      padding: 10px;
+      border-radius: 5px;
+      max-width: 400px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 9999;
+      display: none;
+    }
+
+    .debug.visible {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Splash Screen -->
+  <div id="splash">
+    <h1>Narrowcast Pro</h1>
+    <p>Ready to Cast</p>
+    <div class="status" id="status">Waiting for content...</div>
+  </div>
+
+  <!-- Content Frame -->
+  <iframe id="content-frame"></iframe>
+
+  <!-- Error Screen -->
+  <div id="error">
+    <h2>Connection Error</h2>
+    <p id="error-message">Unable to load content</p>
+  </div>
+
+  <!-- Debug Console (only visible in development) -->
+  <div id="debug" class="debug"></div>
+
+  <!-- Cast Receiver SDK -->
+  <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+
+  <script>
+    // Configuration
+    const DEBUG_MODE = true; // Set to false in production
+    const CUSTOM_NAMESPACE = 'urn:x-cast:com.narrowcastpro.presentation';
+
+    // DOM Elements
+    const splashEl = document.getElementById('splash');
+    const contentFrameEl = document.getElementById('content-frame');
+    const errorEl = document.getElementById('error');
+    const errorMessageEl = document.getElementById('error-message');
+    const statusEl = document.getElementById('status');
+    const debugEl = document.getElementById('debug');
+
+    // Debug logging
+    function log(message, data) {
+      const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
+      const logMessage = `[${timestamp}] ${message}`;
+
+      console.log(logMessage, data || '');
+
+      if (DEBUG_MODE) {
+        debugEl.classList.add('visible');
+        const entry = document.createElement('div');
+        entry.textContent = logMessage + (data ? ' ' + JSON.stringify(data) : '');
+        debugEl.appendChild(entry);
+        debugEl.scrollTop = debugEl.scrollHeight;
+      }
+    }
+
+    // Initialize Cast Receiver
+    log('Initializing Cast Receiver...');
+
+    const context = cast.framework.CastReceiverContext.getInstance();
+    const playerManager = context.getPlayerManager();
+
+    // Application configuration
+    const options = new cast.framework.CastReceiverOptions();
+
+    // Disable default media handling since we're loading custom HTML
+    options.disableIdleTimeout = true;
+    options.maxInactivity = 3600; // 1 hour
+
+    log('Cast options configured', {
+      disableIdleTimeout: options.disableIdleTimeout,
+      maxInactivity: options.maxInactivity
+    });
+
+    // Listen for custom messages from sender
+    context.addCustomMessageListener(CUSTOM_NAMESPACE, (customEvent) => {
+      log('Received custom message', customEvent.data);
+
+      try {
+        const data = customEvent.data;
+
+        if (data.type === 'LOAD_PRESENTATION') {
+          loadPresentation(data.url);
+        } else if (data.type === 'STOP_PRESENTATION') {
+          stopPresentation();
+        } else if (data.type === 'PING') {
+          // Respond to ping
+          sendMessage(customEvent.senderId, { type: 'PONG' });
+        } else {
+          log('Unknown message type', data.type);
+        }
+      } catch (error) {
+        log('Error processing message', error.message);
+        showError('Message Error: ' + error.message);
+      }
+    });
+
+    // System events
+    context.addEventListener(cast.framework.system.EventType.READY, () => {
+      log('Cast Receiver is READY');
+      statusEl.textContent = 'Ready for content...';
+    });
+
+    context.addEventListener(cast.framework.system.EventType.SENDER_CONNECTED, (event) => {
+      log('Sender connected', event.senderId);
+      statusEl.textContent = 'Sender connected';
+    });
+
+    context.addEventListener(cast.framework.system.EventType.SENDER_DISCONNECTED, (event) => {
+      log('Sender disconnected', event.senderId);
+
+      // Check if there are any other connected senders
+      const connectedSenders = context.getSenders();
+      if (connectedSenders.length === 0) {
+        log('No more senders, stopping presentation');
+        setTimeout(() => {
+          stopPresentation();
+        }, 5000); // Wait 5 seconds before stopping
+      }
+    });
+
+    context.addEventListener(cast.framework.system.EventType.ERROR, (error) => {
+      log('Cast system error', error);
+      showError('System Error: ' + error.message);
+    });
+
+    // Load presentation in iframe
+    function loadPresentation(url) {
+      log('Loading presentation', url);
+
+      statusEl.textContent = 'Loading presentation...';
+
+      // Hide error if shown
+      errorEl.classList.remove('visible');
+
+      // Set iframe source
+      contentFrameEl.src = url;
+
+      // Show content when loaded
+      contentFrameEl.onload = () => {
+        log('Presentation loaded successfully');
+        splashEl.classList.add('hidden');
+        contentFrameEl.classList.add('visible');
+
+        // Hide splash completely after transition
+        setTimeout(() => {
+          splashEl.style.display = 'none';
+        }, 500);
+      };
+
+      // Handle load errors
+      contentFrameEl.onerror = (error) => {
+        log('Presentation load error', error);
+        showError('Failed to load presentation from: ' + url);
+      };
+
+      // Timeout if not loaded in 10 seconds
+      setTimeout(() => {
+        if (splashEl.classList.contains('hidden') === false) {
+          log('Presentation load timeout');
+          showError('Timeout loading presentation. Check network connection.');
+        }
+      }, 10000);
+    }
+
+    // Stop presentation
+    function stopPresentation() {
+      log('Stopping presentation');
+
+      contentFrameEl.src = 'about:blank';
+      contentFrameEl.classList.remove('visible');
+
+      errorEl.classList.remove('visible');
+
+      splashEl.style.display = 'flex';
+      splashEl.classList.remove('hidden');
+      statusEl.textContent = 'Waiting for content...';
+    }
+
+    // Show error screen
+    function showError(message) {
+      log('Showing error', message);
+
+      errorMessageEl.textContent = message;
+
+      splashEl.classList.add('hidden');
+      contentFrameEl.classList.remove('visible');
+      errorEl.classList.add('visible');
+
+      // Auto-hide error after 10 seconds
+      setTimeout(() => {
+        if (errorEl.classList.contains('visible')) {
+          stopPresentation();
+        }
+      }, 10000);
+    }
+
+    // Send message to sender
+    function sendMessage(senderId, message) {
+      try {
+        context.sendCustomMessage(CUSTOM_NAMESPACE, senderId, message);
+        log('Sent message to sender', message);
+      } catch (error) {
+        log('Error sending message', error.message);
+      }
+    }
+
+    // Handle iframe communication errors
+    window.addEventListener('error', (event) => {
+      log('Window error', {
+        message: event.message,
+        filename: event.filename,
+        lineno: event.lineno
+      });
+    });
+
+    // Start the receiver
+    try {
+      context.start(options);
+      log('Cast Receiver started successfully');
+    } catch (error) {
+      log('Failed to start receiver', error.message);
+      showError('Receiver initialization failed: ' + error.message);
+    }
+
+    // Heartbeat to keep receiver alive
+    setInterval(() => {
+      log('Heartbeat');
+    }, 30000); // Every 30 seconds
+
+  </script>
+
+</body>
+</html>

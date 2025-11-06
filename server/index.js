@@ -46,6 +46,9 @@ app.use((req, res, next) => {
 // Serve uploaded files (branding assets)
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+// Serve Chromecast receiver and other public assets
+app.use('/receiver', express.static(path.join(__dirname, 'public')));
+
 // Serve static files from React app in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
