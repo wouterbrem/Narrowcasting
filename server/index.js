@@ -87,7 +87,7 @@ wss.on('connection', (ws) => {
 
   ws.on('close', () => {
     logger.info('WebSocket client disconnected');
-    logger.activity('WS_CLIENT_DISCONNECTED', { clients: wss.clients.size - 1 });
+    logger.activity('WS_CLIENT_DISCONNECTED', { clients: wss.clients.size });
   });
 
   ws.on('error', (error) => {

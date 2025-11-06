@@ -25,11 +25,23 @@ export function useWebSocket(handlers = {}) {
   const wsRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
   const reconnectAttemptsRef = useRef(0);
+  const isMountedRef = useRef(true);
+
+  // Store handlers in refs to avoid reconnection loops when they change
+  const handlersRef = useRef({ onMessage, onConnect, onDisconnect, onError });
+
+  // Update handlers ref whenever they change (without triggering reconnection)
+  useEffect(() => {
+    handlersRef.current = { onMessage, onConnect, onDisconnect, onError };
+  }, [onMessage, onConnect, onDisconnect, onError]);
 
   const maxReconnectAttempts = 5;
   const reconnectDelay = 3000; // 3 seconds
 
   const connect = useCallback(() => {
+    // Don't connect if component is unmounted
+    if (!isMountedRef.current) return;
+
     try {
       const wsUrl = getWebSocketUrl();
       console.log('Connecting to WebSocket:', wsUrl);
@@ -41,17 +53,17 @@ export function useWebSocket(handlers = {}) {
         console.log('WebSocket connected');
         setIsConnected(true);
         reconnectAttemptsRef.current = 0;
-        if (onConnect) onConnect();
+        if (handlersRef.current.onConnect) handlersRef.current.onConnect();
       };
 
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
           setLastMessage(data);
-          if (onMessage) onMessage(data);
+          if (handlersRef.current.onMessage) handlersRef.current.onMessage(data);
         } catch (error) {
           console.error('Failed to parse WebSocket message:', error);
-          if (onError) onError(error);
+          if (handlersRef.current.onError) handlersRef.current.onError(error);
         }
       };
 
@@ -59,30 +71,30 @@ export function useWebSocket(handlers = {}) {
         console.log('WebSocket disconnected');
         setIsConnected(false);
         wsRef.current = null;
-        if (onDisconnect) onDisconnect();
+        if (handlersRef.current.onDisconnect) handlersRef.current.onDisconnect();
 
-        // Attempt to reconnect
-        if (reconnectAttemptsRef.current < maxReconnectAttempts) {
+        // Only attempt to reconnect if component is still mounted
+        if (isMountedRef.current && reconnectAttemptsRef.current < maxReconnectAttempts) {
           reconnectAttemptsRef.current += 1;
           console.log(`Reconnecting... Attempt ${reconnectAttemptsRef.current}/${maxReconnectAttempts}`);
 
           reconnectTimeoutRef.current = setTimeout(() => {
             connect();
           }, reconnectDelay);
-        } else {
+        } else if (reconnectAttemptsRef.current >= maxReconnectAttempts) {
           console.error('Max reconnection attempts reached');
         }
       };
 
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
-        if (onError) onError(error);
+        if (handlersRef.current.onError) handlersRef.current.onError(error);
       };
     } catch (error) {
       console.error('Failed to create WebSocket:', error);
-      if (onError) onError(error);
+      if (handlersRef.current.onError) handlersRef.current.onError(error);
     }
-  }, [onMessage, onConnect, onDisconnect, onError]);
+  }, []); // Empty dependency array - connect function never changes
 
   const disconnect = useCallback(() => {
     if (reconnectTimeoutRef.current) {
@@ -107,14 +119,16 @@ export function useWebSocket(handlers = {}) {
     return false;
   }, []);
 
-  // Connect on mount, disconnect on unmount
+  // Connect on mount, disconnect on unmount - only runs once
   useEffect(() => {
+    isMountedRef.current = true;
     connect();
 
     return () => {
+      isMountedRef.current = false;
       disconnect();
     };
-  }, [connect, disconnect]);
+  }, []); // Empty dependency array - only run on mount/unmount
 
   return {
     isConnected,
