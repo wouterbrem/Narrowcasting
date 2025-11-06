@@ -17,7 +17,8 @@ function App() {
     devices,
     slides,
     presentations,
-    statistics
+    statistics,
+    setupStatus
   } = useNarrowcastWebSocket();
 
   const navigation = [
@@ -79,7 +80,7 @@ function App() {
                 path="/"
                 element={
                   <ErrorBoundary>
-                    <Dashboard devices={devices} presentations={presentations} slides={slides} />
+                    <Dashboard devices={devices} presentations={presentations} slides={slides} setupStatus={setupStatus} />
                   </ErrorBoundary>
                 }
               />

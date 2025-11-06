@@ -87,7 +87,8 @@ wss.on('connection', (ws) => {
     devices: chromecastManager.getDevices(),
     slides: slideManager.getAllSlides(),
     presentations: presentationManager.getAllPresentations(),
-    statistics: presentationManager.getStatistics()
+    statistics: presentationManager.getStatistics(),
+    setupStatus: setupManager.getSetupStatus()
   }));
 
   ws.on('close', () => {
@@ -938,10 +939,42 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Start server
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   logger.info(`Server running on port ${PORT}`);
+
+  // Display server info
+  const serverInfo = setupManager.getServerInfo(PORT);
+  logger.info(`Server accessible at: http://${serverInfo.primaryAddress}:${PORT}`);
+  logger.info(`Receiver URL: ${serverInfo.receiverUrl}`);
+
+  // Check setup status
+  const setupStatus = setupManager.getSetupStatus();
+  if (!setupStatus.appIdConfigured) {
+    logger.warn('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    logger.warn('⚠️  CHROMECAST APP_ID NOT CONFIGURED');
+    logger.warn('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    logger.warn('');
+    logger.warn('HTML presentations will NOT work on Chromecast without configuration.');
+    logger.warn('');
+    logger.warn('To configure:');
+    logger.warn(`  1. Open http://${serverInfo.primaryAddress}:${PORT} in your browser`);
+    logger.warn('  2. Navigate to Setup page (Settings icon in sidebar)');
+    logger.warn('  3. Follow the setup wizard to configure your Chromecast receiver');
+    logger.warn('');
+    logger.warn('Or see documentation: CHROMECAST_SETUP.md');
+    logger.warn('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  } else {
+    logger.info(`✓ Chromecast APP_ID configured: ${setupStatus.appId}`);
+    logger.info('✓ Custom receiver enabled - HTML presentations will work');
+  }
+
   logger.info('Starting Chromecast discovery...');
-  logger.activity('SERVER_STARTED', { port: PORT, environment: process.env.NODE_ENV || 'development' });
+  logger.activity('SERVER_STARTED', {
+    port: PORT,
+    environment: process.env.NODE_ENV || 'development',
+    appIdConfigured: setupStatus.appIdConfigured
+  });
+
   chromecastManager.startDiscovery();
 });
 

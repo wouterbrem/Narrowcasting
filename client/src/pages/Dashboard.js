@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { presentationAPI, deviceAPI } from '../services/api';
 import {
   MonitorPlay,
@@ -7,11 +8,13 @@ import {
   Wifi,
   WifiOff,
   ExternalLink,
-  Presentation as PresentationIcon
+  Presentation as PresentationIcon,
+  AlertCircle,
+  Settings
 } from 'lucide-react';
 import './Dashboard.css';
 
-function Dashboard({ devices, presentations }) {
+function Dashboard({ devices, presentations, setupStatus }) {
   const [selectedDevices, setSelectedDevices] = useState([]);
   const [selectedPresentation, setSelectedPresentation] = useState('');
   const [loading, setLoading] = useState(false);
@@ -85,6 +88,26 @@ function Dashboard({ devices, presentations }) {
           Manage your Chromecast devices and cast presentations
         </p>
       </div>
+
+      {/* Setup Warning Banner */}
+      {setupStatus && !setupStatus.appIdConfigured && (
+        <div className="setup-warning-banner">
+          <div className="banner-icon">
+            <AlertCircle size={24} />
+          </div>
+          <div className="banner-content">
+            <h3>Chromecast Setup Required</h3>
+            <p>
+              HTML presentations will not work without configuring your Chromecast receiver.
+              This only takes 15-30 minutes and is required once.
+            </p>
+          </div>
+          <Link to="/setup" className="banner-action">
+            <Settings size={18} />
+            <span>Start Setup</span>
+          </Link>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="stats-grid">

@@ -142,7 +142,7 @@ npm run dist:win    # Windows: Creates Setup.exe and Portable.exe
 
 By default, Chromecast only supports casting **media files** (video, audio, images). To cast **HTML presentations** (which is what Narrowcast Pro uses for slides), you need to:
 
-1. Register a free custom receiver with Google Cast ($5 one-time fee)
+1. Register a custom receiver with Google Cast ($5 one-time fee)
 2. Configure Narrowcast Pro with your receiver APP_ID
 
 **Without this setup:**
@@ -151,7 +151,23 @@ By default, Chromecast only supports casting **media files** (video, audio, imag
 
 **Setup takes 15-30 minutes and is required only once.**
 
-**📖 See [CHROMECAST_SETUP.md](CHROMECAST_SETUP.md) for complete step-by-step instructions!**
+### 🚀 Easy Setup with Built-in Wizard
+
+Narrowcast Pro now includes an **interactive Setup Wizard** that guides you through the process:
+
+1. Launch Narrowcast Pro
+2. You'll see a warning banner on the Dashboard if setup is needed
+3. Click **"Start Setup"** or navigate to the **Setup** page (Settings icon)
+4. Follow the step-by-step wizard with automatic detection and validation
+
+**The wizard makes setup 10x easier with:**
+- ✅ Automatic server IP detection
+- ✅ One-click copy for receiver URL
+- ✅ APP_ID format validation
+- ✅ Receiver accessibility testing
+- ✅ Direct links to Google Cast Console
+
+**📖 See [CHROMECAST_SETUP.md](CHROMECAST_SETUP.md) for detailed documentation!**
 
 ---
 

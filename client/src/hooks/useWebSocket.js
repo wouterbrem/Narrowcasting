@@ -136,6 +136,7 @@ export function useNarrowcastWebSocket() {
   const [slides, setSlides] = useState([]);
   const [presentations, setPresentations] = useState([]);
   const [statistics, setStatistics] = useState(null);
+  const [setupStatus, setSetupStatus] = useState(null);
 
   const handleMessage = useCallback((data) => {
     switch (data.type) {
@@ -144,6 +145,7 @@ export function useNarrowcastWebSocket() {
         setSlides(data.slides || []);
         setPresentations(data.presentations || []);
         setStatistics(data.statistics || null);
+        setSetupStatus(data.setupStatus || null);
         break;
 
       case 'deviceFound':
@@ -211,6 +213,7 @@ export function useNarrowcastWebSocket() {
     slides,
     presentations,
     statistics,
+    setupStatus,
     send,
     reconnect
   };

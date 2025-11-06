@@ -1,15 +1,37 @@
 # Chromecast Custom Receiver Setup Guide
 
+## 🚀 Quick Start: Use the Setup Wizard!
+
+**Narrowcast Pro now includes an interactive Setup Wizard that makes configuration easy!**
+
+1. Open Narrowcast Pro
+2. Navigate to **Setup** page (Settings icon in sidebar)
+3. Follow the step-by-step wizard
+
+The wizard automatically:
+- ✅ Detects your server IP address
+- ✅ Generates receiver URLs for you
+- ✅ Provides copy-paste buttons
+- ✅ Tests receiver accessibility
+- ✅ Validates APP_ID format
+- ✅ Saves configuration automatically
+
+**This guide provides additional context and manual setup instructions if needed.**
+
+---
+
 ## 🎯 Why Do You Need This?
 
 Chromecast's **DefaultMediaReceiver** only supports media files (video, audio, images). It **cannot display HTML presentations**, which is what Narrowcast Pro uses for slides.
 
 To display HTML presentations on Chromecast, you need to register a **custom receiver** with Google Cast. This is:
-- ✅ **Free** (no cost)
+- ✅ **Free** registration (one-time $5 fee)
 - ✅ **Quick** (takes 15-30 minutes for first-time setup)
 - ✅ **Required** for HTML presentations to work
 
 Without this setup, your presentations will not display on Chromecast devices.
+
+**✨ Use the built-in Setup Wizard for guided configuration!**
 
 ---
 
