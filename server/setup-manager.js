@@ -13,6 +13,29 @@ class SetupManager {
   constructor() {
     this.envPath = path.join(__dirname, '../.env');
     this.envExamplePath = path.join(__dirname, '../.env.example');
+
+    // Auto-configure free receiver on first launch
+    this.autoConfigureFreeReceiver();
+  }
+
+  /**
+   * Auto-configure free receiver if no .env file exists
+   */
+  autoConfigureFreeReceiver() {
+    // Only run if .env doesn't exist
+    if (!fs.existsSync(this.envPath)) {
+      logger.info('No configuration found - auto-configuring free receiver...');
+
+      const result = this.useFreeReceiver();
+
+      if (result.success) {
+        logger.info('✓ Free receiver auto-configured successfully!');
+        logger.info('✓ APP_ID: 5CB45E5A (Free Public Receiver)');
+        logger.info('✓ You can now cast HTML presentations without any registration');
+      } else {
+        logger.warn('Failed to auto-configure free receiver:', result.error);
+      }
+    }
   }
 
   /**
