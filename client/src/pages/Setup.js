@@ -422,13 +422,14 @@ function Setup() {
         </div>
       )}
 
-      {/* Registration Instructions */}
-      {instructions && (
-        <div className="setup-section">
-          <div className="section-header">
+      {/* Registration Instructions - Only show if not yet configured */}
+      {instructions && !setupStatus?.appIdConfigured && (
+        <details className="setup-section collapsible">
+          <summary className="section-header clickable">
             <Globe size={24} />
-            <h2>Custom Receiver Registration (Optional)</h2>
-          </div>
+            <h2>Advanced: Custom Receiver Registration</h2>
+            <span className="toggle-hint"></span>
+          </summary>
 
           <div className="registration-info">
             <div className="cost-info">
@@ -555,7 +556,7 @@ function Setup() {
               </p>
             </div>
           )}
-        </div>
+        </details>
       )}
 
       {/* Warnings and Errors */}

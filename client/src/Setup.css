@@ -131,6 +131,40 @@
   border: 1px solid var(--border-color, #e5e7eb);
 }
 
+.setup-section.collapsible {
+  background: var(--gray-50, #f9fafb);
+  border: 1px dashed var(--border-color, #e5e7eb);
+}
+
+.setup-section.collapsible summary {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.setup-section.collapsible summary::-webkit-details-marker {
+  display: none;
+}
+
+.setup-section.collapsible summary .toggle-hint {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--text-secondary, #6b7280);
+  font-style: italic;
+}
+
+.setup-section.collapsible[open] summary .toggle-hint::before {
+  content: 'Click to collapse';
+}
+
+.setup-section.collapsible:not([open]) summary .toggle-hint::before {
+  content: 'Click to expand';
+}
+
+.setup-section.collapsible summary:hover {
+  opacity: 0.8;
+}
+
 .section-header {
   display: flex;
   align-items: center;
@@ -138,6 +172,10 @@
   margin-bottom: 24px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.section-header.clickable {
+  cursor: pointer;
 }
 
 .section-header svg {
