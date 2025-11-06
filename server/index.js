@@ -11,6 +11,7 @@ const ScheduleManager = require('./schedule-manager');
 const SlideManager = require('./slide-manager');
 const PresentationManager = require('./presentation-manager');
 const brandingManager = require('./branding-manager');
+const SetupManager = require('./setup-manager');
 
 const app = express();
 const server = http.createServer(app);
@@ -73,6 +74,7 @@ const chromecastManager = new ChromecastManager();
 const slideManager = new SlideManager();
 const presentationManager = new PresentationManager(slideManager);
 const scheduleManager = new ScheduleManager(chromecastManager);
+const setupManager = new SetupManager();
 
 // WebSocket connection handling
 wss.on('connection', (ws) => {
@@ -791,6 +793,140 @@ app.get('/api/logs', (req, res) => {
   } catch (error) {
     logger.error('Failed to read logs:', error);
     res.status(500).json({ error: 'Failed to read logs' });
+  }
+});
+
+// ========================================
+// SETUP ENDPOINTS (Chromecast Configuration Wizard)
+// ========================================
+
+// Get comprehensive setup status
+app.get('/api/setup/check', async (req, res) => {
+  try {
+    const result = await setupManager.runSetupCheck();
+    res.json(result);
+  } catch (error) {
+    logger.error('Setup check error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get server information for receiver configuration
+app.get('/api/setup/server-info', (req, res) => {
+  try {
+    const port = parseInt(process.env.PORT) || 3001;
+    const serverInfo = setupManager.getServerInfo(port);
+    res.json(serverInfo);
+  } catch (error) {
+    logger.error('Server info error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get current setup status
+app.get('/api/setup/status', (req, res) => {
+  try {
+    const status = setupManager.getSetupStatus();
+    res.json(status);
+  } catch (error) {
+    logger.error('Setup status error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get registration instructions
+app.get('/api/setup/instructions', (req, res) => {
+  try {
+    const instructions = setupManager.getRegistrationInstructions();
+    res.json(instructions);
+  } catch (error) {
+    logger.error('Instructions error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Save Chromecast APP_ID
+app.post('/api/setup/app-id', (req, res) => {
+  try {
+    const { appId } = req.body;
+
+    if (!appId) {
+      return res.status(400).json({ error: 'appId is required' });
+    }
+
+    const result = setupManager.saveAppId(appId);
+
+    if (result.success) {
+      logger.info(`Chromecast APP_ID configured: ${appId}`);
+      logger.activity('SETUP_APP_ID_CONFIGURED', { appId });
+    }
+
+    res.json(result);
+  } catch (error) {
+    logger.error('Save APP_ID error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Test receiver URL accessibility
+app.post('/api/setup/test-receiver', async (req, res) => {
+  try {
+    const { url } = req.body;
+
+    if (!url) {
+      return res.status(400).json({ error: 'url is required' });
+    }
+
+    const result = await setupManager.testReceiverUrl(url);
+    res.json(result);
+  } catch (error) {
+    logger.error('Test receiver error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Read current .env file
+app.get('/api/setup/env', (req, res) => {
+  try {
+    const envData = setupManager.readEnvFile();
+
+    if (!envData) {
+      return res.json({
+        exists: false,
+        message: '.env file does not exist yet'
+      });
+    }
+
+    res.json({
+      exists: true,
+      content: envData.parsed // Only send parsed values, not raw file
+    });
+  } catch (error) {
+    logger.error('Read env error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update .env file
+app.post('/api/setup/env', (req, res) => {
+  try {
+    const { updates } = req.body;
+
+    if (!updates || typeof updates !== 'object') {
+      return res.status(400).json({ error: 'updates object is required' });
+    }
+
+    const result = setupManager.writeEnvFile(updates);
+
+    if (result.success) {
+      logger.info('Environment configuration updated');
+      logger.activity('SETUP_ENV_UPDATED', { keys: Object.keys(updates) });
+    }
+
+    res.json(result);
+  } catch (error) {
+    logger.error('Update env error:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 

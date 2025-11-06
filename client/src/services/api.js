@@ -292,6 +292,62 @@ export const systemAPI = {
 };
 
 /**
+ * Setup API (Chromecast Configuration Wizard)
+ */
+export const setupAPI = {
+  /**
+   * Get comprehensive setup status check
+   * @returns {Promise<Object>} Setup check results
+   */
+  check: () => api.get('/setup/check').then(res => res.data),
+
+  /**
+   * Get server network information
+   * @returns {Promise<Object>} Server info including IP and receiver URL
+   */
+  getServerInfo: () => api.get('/setup/server-info').then(res => res.data),
+
+  /**
+   * Get current setup status
+   * @returns {Promise<Object>} Setup status
+   */
+  getStatus: () => api.get('/setup/status').then(res => res.data),
+
+  /**
+   * Get registration instructions
+   * @returns {Promise<Object>} Step-by-step instructions
+   */
+  getInstructions: () => api.get('/setup/instructions').then(res => res.data),
+
+  /**
+   * Save Chromecast APP_ID
+   * @param {string} appId - The 8-character APP_ID from Google Cast Console
+   * @returns {Promise<Object>} Save result
+   */
+  saveAppId: (appId) => api.post('/setup/app-id', { appId }).then(res => res.data),
+
+  /**
+   * Test receiver URL accessibility
+   * @param {string} url - Receiver URL to test
+   * @returns {Promise<Object>} Test result
+   */
+  testReceiver: (url) => api.post('/setup/test-receiver', { url }).then(res => res.data),
+
+  /**
+   * Get current .env file content
+   * @returns {Promise<Object>} ENV file data
+   */
+  getEnv: () => api.get('/setup/env').then(res => res.data),
+
+  /**
+   * Update .env file
+   * @param {Object} updates - Key-value pairs to update
+   * @returns {Promise<Object>} Update result
+   */
+  updateEnv: (updates) => api.post('/setup/env', { updates }).then(res => res.data),
+};
+
+/**
  * Get WebSocket URL
  * @returns {string} WebSocket URL
  */
@@ -308,6 +364,7 @@ const api = {
   group: groupAPI,
   branding: brandingAPI,
   system: systemAPI,
+  setup: setupAPI,
   getWebSocketUrl,
 };
 

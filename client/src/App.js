@@ -8,7 +8,8 @@ import Slides from './pages/Slides';
 import Presentations from './pages/Presentations';
 import Branding from './pages/Branding';
 import Logs from './pages/Logs';
-import { MonitorPlay, Layers, Presentation, Palette, Activity, FileText } from 'lucide-react';
+import Setup from './pages/Setup';
+import { MonitorPlay, Layers, Presentation, Palette, Activity, FileText, Settings } from 'lucide-react';
 
 function App() {
   const {
@@ -24,6 +25,7 @@ function App() {
     { path: '/slides', label: 'Slides', icon: Layers },
     { path: '/presentations', label: 'Presentations', icon: Presentation },
     { path: '/branding', label: 'Branding', icon: Palette },
+    { path: '/setup', label: 'Setup', icon: Settings },
     { path: '/logs', label: 'Logs', icon: FileText },
   ];
 
@@ -102,6 +104,14 @@ function App() {
                 element={
                   <ErrorBoundary>
                     <Branding />
+                  </ErrorBoundary>
+                }
+              />
+              <Route
+                path="/setup"
+                element={
+                  <ErrorBoundary>
+                    <Setup />
                   </ErrorBoundary>
                 }
               />
