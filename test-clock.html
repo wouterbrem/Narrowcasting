@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Clock</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .clock-container {
+      text-align: center;
+      padding: 60px;
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .time {
+      font-size: 120px;
+      font-weight: 200;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .date {
+      font-size: 36px;
+      font-weight: 300;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .day {
+      font-size: 24px;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .debug {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="debug" id="debug">
+    Test Clock - No WebSocket<br>
+    Loaded: <span id="loadTime">-</span><br>
+    Updates: <span id="updates">0</span>
+  </div>
+
+  <div class="clock-container">
+    <div class="time" id="time">00:00:00</div>
+    <div class="date" id="date">Loading...</div>
+    <div class="day" id="day">-</div>
+  </div>
+
+  <script>
+    console.log('Test clock starting - NO WEBSOCKET CONNECTIONS');
+
+    let updateCount = 0;
+    document.getElementById('loadTime').textContent = new Date().toISOString();
+
+    function updateClock() {
+      const now = new Date();
+
+      // Time
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
+
+      // Date
+      const day = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const year = now.getFullYear();
+      document.getElementById('date').textContent = `${day}/${month}/${year}`;
+
+      // Day of week
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      document.getElementById('day').textContent = days[now.getDay()];
+
+      // Update counter
+      updateCount++;
+      document.getElementById('updates').textContent = updateCount;
+    }
+
+    // Update immediately
+    updateClock();
+
+    // Update every second
+    setInterval(updateClock, 1000);
+
+    console.log('Test clock initialized - running without WebSocket');
+  </script>
+</body>
+</html>
